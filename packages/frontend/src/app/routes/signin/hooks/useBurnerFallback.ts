@@ -8,7 +8,7 @@ import {
 import { parseProviderOrSigner } from 'eth-hooks/functions';
 import { TEthersProvider } from 'eth-hooks/models';
 import { useEffect, useRef, useState } from 'react';
-import { AppProviders } from '~~/app/routes/main/hooks/useAppProviders';
+import { AppProviders } from '~~/app/routes/signin/hooks/useAppProviders';
 
 import { localNetworkInfo } from '~~/config/providersConfig';
 
