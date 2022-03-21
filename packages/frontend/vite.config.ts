@@ -27,9 +27,6 @@ export default defineConfig({
 		jsxFactory: 'jsx',
 	},
 	define: {},
-	optimizeDeps: {
-		exclude: ['@apollo/client', `graphql`],
-	},
 	resolve: {
 		preserveSymlinks: true,
 		mainFields: ['module', 'main', 'browser'],
