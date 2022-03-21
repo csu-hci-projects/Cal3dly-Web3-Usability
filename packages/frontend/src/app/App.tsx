@@ -3,7 +3,7 @@ import { ThemeSwitcherProvider } from 'react-css-theme-switcher';
 import { ErrorBoundary, ErrorFallback } from '~~/app/common/ErrorFallback';
 import { EthersAppContext } from 'eth-hooks/context';
 
-const SigninPage = lazy(() => import('./routes/signin/Signin'));
+const MainPage = lazy(() => import('./routes/main/Main'));
 
 import '~~/styles/css/tailwind-base.pcss';
 import '~~/styles/css/tailwind-components.pcss';
@@ -28,7 +28,7 @@ const App: FC = () => {
 						defaultTheme={savedTheme || 'light'}
 					>
 						<Suspense fallback={<div />}>
-							<SigninPage />
+							<MainPage />
 						</Suspense>
 					</ThemeSwitcherProvider>
 				</ErrorBoundary>

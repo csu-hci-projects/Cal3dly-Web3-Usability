@@ -15,8 +15,8 @@
 		"dev:unlink": "yalc remove eth-hooks && yalc remove eth-components"
 	},
 	"dependencies": {
-		"@mantine/core": "^4.0.7",
-		"@mantine/hooks": "^4.0.7",
+		"@ant-design/icons": "^4.2.2",
+		"antd": "^4.7.0",
 		"autoprefixer": "^10.4.4",
 		"eth-components": "2.2.1",
 		"eth-hooks": "3.4.0",
