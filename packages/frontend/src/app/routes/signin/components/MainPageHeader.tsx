@@ -1,8 +1,10 @@
+
 import { Account } from 'eth-components/ant';
 import { getNetwork } from '@ethersproject/networks';
 import { Button, Alert } from '@mantine/core';
 import React, { FC, ReactElement } from 'react';
 import { AppProviders } from '~~/app/routes/signin/hooks/useAppProviders';
+
 import { useEthersContext } from 'eth-hooks/context';
 import { TEthersModalConnector } from 'eth-hooks/context';
 import { useGasPrice } from 'eth-hooks';
@@ -59,6 +61,7 @@ export const MainPageHeader: FC<IMainPageHeaderProps> = (props) => {
 	/**
 	 * display the current network on the top left
 	 */
+
 	// let networkDisplay: ReactElement | undefined;
 	// if (
 	// 	selectedChainId &&
@@ -105,6 +108,7 @@ export const MainPageHeader: FC<IMainPageHeaderProps> = (props) => {
 	// 		</div>
 	// 	);
 	// }
+
 
 	return (
 		<>

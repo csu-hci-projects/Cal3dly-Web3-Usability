@@ -7,6 +7,8 @@ body, #root {
   height: 100%;
 }
 
+
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
@@ -48,8 +50,4 @@ code {
   to {
     transform: rotate(360deg);
   }
-}
-
-button {
-  font-size: calc(10px + 2vmin);
 }
