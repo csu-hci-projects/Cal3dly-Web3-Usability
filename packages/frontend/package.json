@@ -21,6 +21,7 @@
 		"eth-components": "2.2.1",
 		"eth-hooks": "3.4.0",
 		"ethers": "^5.4.1",
+		"firebase": "^9.6.9",
 		"postcss": "^8.4.12",
 		"postcss-cli": "^9.1.0",
 		"react": "^17.0.2",

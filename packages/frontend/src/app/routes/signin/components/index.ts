@@ -5,7 +5,6 @@ import { lazier } from 'eth-hooks/helpers';
 /**
  * lazy/lazier loaded component
  */
-export const MainPageHeader = lazier(() => import('./MainPageHeader'), 'MainPageHeader');
 /**
  * lazy/lazier loaded component
  */
