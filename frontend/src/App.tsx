@@ -2,43 +2,46 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { Alert, Button, Typography } from '@mui/material';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { useEthers } from '@usedapp/core';
 import { Calendar } from './components/Calender';
 
 function App() {
-	const [account, setAccount] = useState<String | undefined>(undefined);
+	const { activateBrowserWallet, account, error, active, library } =
+		useEthers();
+	let listener = null;
+	useEffect((): any => {
+		const wasConnected = localStorage.getItem('IS_CONNECTED');
+		if (!active && !account && !error && wasConnected) {
+			activateBrowserWallet();
+			return;
+		}
+
+		if (!active && !account && !error && !wasConnected) {
+			localStorage.setItem('IS_CONNECTED', 'false');
+			return;
+		}
+
+		if (active && account && wasConnected === 'false') {
+			localStorage.setItem('IS_CONNECTED', 'true');
+			return;
+		}
+
+		if (error) {
+			return <Alert severity='error'>{error.message}</Alert>;
+		}
+	}, [active, error]);
 
 	useEffect(() => {
-		isSignedIn();
-	}, []);
-
-	const isSignedIn = async () => {
-		const provider: any = await detectEthereumProvider();
-		const accounts = await provider.request({ method: 'eth_accounts' });
-
-		if (accounts.length) {
-			setAccount(accounts[0]);
-		} else {
-			setAccount(undefined);
-		}
-	};
-
-	const connectUser = async () => {
-		try {
-			const provider: any = await detectEthereumProvider();
-			const accounts = await provider.request({
-				method: 'eth_requestAccounts',
-			});
-
-			if (accounts.length) {
-				console.log('FOUND ACCOUNT', accounts[0]);
-				setAccount(accounts[0]);
-			} else {
-				return <Alert severity='error'>No accounts found</Alert>;
+		// @ts-expect-error
+		listener = library?.provider?.on(
+			'accountsChanged',
+			(acc: string | null | undefined) => {
+				if (acc && !acc.length) {
+					localStorage.setItem('IS_CONNECTED', 'false');
+				}
 			}
-		} catch (e) {
-			console.log(e);
-		}
-	};
+		);
+	}, [library]);
 
 	const disconnectUser = async () => {};
 
@@ -51,7 +54,7 @@ function App() {
 				</Typography>
 			</header>
 			{!account && (
-				<Button variant='outlined' onClick={connectUser}>
+				<Button variant='outlined' onClick={() => activateBrowserWallet()}>
 					Connect Wallet
 				</Button>
 			)}
