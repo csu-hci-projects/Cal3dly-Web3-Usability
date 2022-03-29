@@ -34,4 +34,6 @@ describe('Cal3dly', () => {
 
 		expect(appointments.length).to.equal(2);
 	});
+
+	//TODO: Add cancel appointment tests
 });
