@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { Alert, Button, Typography } from '@mui/material';
-import { useEthers, shortenAddress, useLookupAddress } from '@usedapp/core';
+import { useEthers } from '@usedapp/core';
 import { Calendar } from './components/Calender';
+import { Web3Button } from './components/Web3Button';
 
 function App() {
-	const { activateBrowserWallet, account, error, active, library, deactivate } =
+	const { activateBrowserWallet, account, error, active, library } =
 		useEthers();
 	let listener = null;
-	const ens = useLookupAddress();
+
 	useEffect((): any => {
 		const wasConnected = localStorage.getItem('IS_CONNECTED');
 		if (!active && !account && !error && wasConnected) {
@@ -51,18 +52,7 @@ function App() {
 					A Web3 Powered Appointment Scheduler
 				</Typography>
 			</header>
-			{account ? (
-				<>
-					<Button variant='outlined'>{ens ?? shortenAddress(account)}</Button>
-					<Button variant='outlined' onClick={() => deactivate()}>
-						Disconnect
-					</Button>
-				</>
-			) : (
-				<Button variant='outlined' onClick={() => activateBrowserWallet()}>
-					Connect
-				</Button>
-			)}
+			<Web3Button />
 			{account && <Calendar />}
 		</div>
 	);
