@@ -14,12 +14,13 @@ async function main() {
 	// await hre.run('compile');
 
 	// We get the contract to deploy
-	const Greeter = await hre.ethers.getContractFactory('Greeter');
-	const greeter = await Greeter.deploy('Hello, Hardhat!');
+	const Contract = await hre.ethers.getContractFactory('Cal3dly');
+	const contract = await Contract.deploy();
 
-	await greeter.deployed();
+	await contract.deployed();
 
-	console.log('Greeter deployed to:', greeter.address);
+	console.log('Cal3dly deployed to: ', contract.address);
+	//https://goerli.etherscan.io/address/0xa81203EE62320213EAd6C97Ea966EE5Cd62ffE37
 }
 
 // We recommend this pattern to be able to use async/await everywhere
