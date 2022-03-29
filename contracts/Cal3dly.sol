@@ -2,8 +2,6 @@
 pragma solidity ^0.8.0;
 
 contract Cal3dly {
-    address public owner;
-
     struct Appointment {
         string title;
         string description;
@@ -12,17 +10,20 @@ contract Cal3dly {
         address attendee;
     }
 
-    Appointment[] apts;
+    mapping(address => Appointment[]) public apts;
 
-    constructor() {
-        owner = msg.sender;
-    }
+    constructor() {}
 
-    function getAppointments() public view returns (Appointment[] memory) {
-        return apts;
+    function getAppointments(address _owner)
+        public
+        view
+        returns (Appointment[] memory)
+    {
+        return apts[_owner];
     }
 
     function addAppointment(
+        address _owner,
         string memory _title,
         string memory _description,
         uint256 _startTime,
@@ -35,22 +36,29 @@ contract Cal3dly {
             _endTime,
             msg.sender
         );
-        apts.push(apt);
+        apts[_owner].push(apt);
     }
 
-    function cancelAppointment() public {
-        for (uint256 i = 0; i < apts.length; i++) {
-            if (apts[i].attendee == msg.sender) {
-                delete apts[i];
+    function cancelAppointment(address _owner, string memory _title) public {
+        Appointment[] memory userApts = apts[_owner];
+        for (uint256 i = 0; i < userApts.length; i++) {
+            if (
+                userApts[i].attendee == msg.sender &&
+                (keccak256(abi.encodePacked(userApts[i].title)) ==
+                    keccak256(abi.encodePacked(_title)))
+            ) {
+                delete apts[_owner][i];
+                break;
             }
         }
     }
 
     function cancelAppointment(address _attendee) public {
-        require(msg.sender == owner);
-        for (uint256 i = 0; i < apts.length; i++) {
-            if (apts[i].attendee == _attendee) {
-                delete apts[i];
+        Appointment[] memory userApts = apts[msg.sender];
+        for (uint256 i = 0; i < userApts.length; i++) {
+            if (userApts[i].attendee == _attendee) {
+                delete apts[msg.sender][i];
+                break;
             }
         }
     }
