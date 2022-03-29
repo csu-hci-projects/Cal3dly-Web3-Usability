@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { Alert, Button, Typography } from '@mui/material';
+import { useEffect } from 'react';
+import './styles/App.css';
+import { Alert, Typography } from '@mui/material';
 import { useEthers } from '@usedapp/core';
 import { Calendar } from './components/Calender';
 import { Web3Button } from './components/Web3Button';
