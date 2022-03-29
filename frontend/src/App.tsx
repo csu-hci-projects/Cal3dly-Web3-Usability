@@ -8,16 +8,15 @@ function App() {
 	const [account, setAccount] = useState<String | undefined>(undefined);
 
 	useEffect(() => {
-		const detect = setInterval(() => {
-			isSignedIn();
-		}, 15000);
-		return () => clearInterval(detect);
+		isSignedIn();
 	}, []);
 
 	const isSignedIn = async () => {
 		const provider: any = await detectEthereumProvider();
-		if (provider.selectedAddress) {
-			setAccount(provider.selectedAddress);
+		const accounts = await provider.request({ method: 'eth_accounts' });
+
+		if (accounts.length) {
+			setAccount(accounts[0]);
 		} else {
 			setAccount(undefined);
 		}
