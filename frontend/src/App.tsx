@@ -2,15 +2,19 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { Alert, Button, Typography } from '@mui/material';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { Calendar } from './components/Calender';
 
 function App() {
 	const [account, setAccount] = useState<String | undefined>(undefined);
 
 	useEffect(() => {
-		isConnected();
+		const detect = setInterval(() => {
+			isSignedIn();
+		}, 15000);
+		return () => clearInterval(detect);
 	}, []);
 
-	const isConnected = async () => {
+	const isSignedIn = async () => {
 		const provider: any = await detectEthereumProvider();
 		if (provider.selectedAddress) {
 			setAccount(provider.selectedAddress);
@@ -41,7 +45,7 @@ function App() {
 
 	return (
 		<div className='App'>
-			<header className='App-header'>
+			<header>
 				<Typography variant='h1'>Cal3dly</Typography>
 				<Typography className='subtitle' variant='subtitle1'>
 					A Web3 Powered Appointment Scheduler
@@ -52,7 +56,7 @@ function App() {
 					Connect Wallet
 				</Button>
 			)}
-			{account && <div>Rest of App</div>}
+			{account && <Calendar />}
 		</div>
 	);
 }

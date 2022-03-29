@@ -29,3 +29,12 @@ h1 {
   font-size: 2em;
   margin: 0;
 }
+
+.calendar{
+  background-color: white;
+  color: black;
+  font-size: 1.5em;
+  padding: 1.25em;
+  margin: 1.25em;
+  height: 37.5em;
+}
