@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import './styles/App.css';
-import { Alert, Typography } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useEthers } from '@usedapp/core';
-import { Calendar } from './components/Calender';
-import { Web3Button } from './components/Web3Button';
 import {} from 'query-string';
+import { Header } from './components/header/Header';
+import { Main } from './components/main/Main';
 
 function App() {
 	const { activateBrowserWallet, account, error, active, library } =
@@ -53,21 +53,8 @@ function App() {
 
 	return (
 		<>
-			<div className='header'>
-				<div className='header-contents'>
-					<p>Cal3dly 🗓️</p>
-					<Web3Button />
-				</div>
-			</div>
-			<div className='main-content-area'>
-				<div>
-					<Typography variant='h1'>Cal3dly</Typography>
-					<Typography className='subtitle' variant='subtitle1'>
-						A Web3 Powered Appointment Scheduler
-					</Typography>
-				</div>
-				{account && <Calendar />}
-			</div>
+			<Header />
+			<Main />
 		</>
 	);
 }
