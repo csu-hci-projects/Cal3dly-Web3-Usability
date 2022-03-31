@@ -4,6 +4,7 @@ import { Alert, Typography } from '@mui/material';
 import { useEthers } from '@usedapp/core';
 import { Calendar } from './components/Calender';
 import { Web3Button } from './components/Web3Button';
+import {} from 'query-string';
 
 function App() {
 	const { activateBrowserWallet, account, error, active, library } =
@@ -43,6 +44,12 @@ function App() {
 			}
 		);
 	}, [library]);
+
+	useEffect(() => {
+		// if (account?.length) {
+		// 	const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?account=' + account;
+		// }
+	}, [account]);
 
 	return (
 		<>
