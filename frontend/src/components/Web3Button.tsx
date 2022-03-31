@@ -9,14 +9,16 @@ export const Web3Button: FC = () => {
 		<>
 			{account ? (
 				<>
-					<Button variant='outlined'>{ens ?? shortenAddress(account)}</Button>
-					<Button variant='outlined' onClick={() => deactivate()}>
-						Disconnect
-					</Button>
+					<div>
+						<Button variant='outlined'>{ens ?? shortenAddress(account)}</Button>
+						<Button variant='outlined' onClick={() => deactivate()}>
+							Disconnect
+						</Button>
+					</div>
 				</>
 			) : (
 				<Button variant='outlined' onClick={() => activateBrowserWallet()}>
-					Connect
+					Connect Wallet
 				</Button>
 			)}
 		</>

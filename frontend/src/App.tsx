@@ -45,16 +45,23 @@ function App() {
 	}, [library]);
 
 	return (
-		<div className='App'>
-			<header>
-				<Typography variant='h1'>Cal3dly</Typography>
-				<Typography className='subtitle' variant='subtitle1'>
-					A Web3 Powered Appointment Scheduler
-				</Typography>
-			</header>
-			<Web3Button />
-			{account && <Calendar />}
-		</div>
+		<>
+			<div className='header'>
+				<div className='header-contents'>
+					<p>Cal3dly 🗓️</p>
+					<Web3Button />
+				</div>
+			</div>
+			<div className='main-content-area'>
+				<div>
+					<Typography variant='h1'>Cal3dly</Typography>
+					<Typography className='subtitle' variant='subtitle1'>
+						A Web3 Powered Appointment Scheduler
+					</Typography>
+				</div>
+				{account && <Calendar />}
+			</div>
+		</>
 	);
 }
 
