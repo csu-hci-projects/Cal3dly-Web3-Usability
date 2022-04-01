@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import {
 	useEthers,
 	shortenAddress,
@@ -53,7 +53,7 @@ export const Web3Button: FC<any> = (props) => {
 				</Box>
 			) : (
 				<Button
-					bg='#A23B4D'
+					bg='#93364A'
 					color='white'
 					border='1px solid transparent'
 					boxShadow='dark-lg'

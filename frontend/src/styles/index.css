@@ -29,7 +29,3 @@ h1 {
 * {
   box-sizing: border-box;
 }
-
-.base {
-  background-image: linear-gradient( 135deg, #F05F57 10%, #360940 100%);
-}

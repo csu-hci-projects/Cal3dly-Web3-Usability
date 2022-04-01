@@ -1,8 +1,10 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
 import App from './App';
 import { DAppProvider, Config, Goerli } from '@usedapp/core';
+import { ColorModeScript } from '@chakra-ui/react';
+import { theme } from './styles/theme';
 
 const config: Config = {
 	readOnlyChainId: Goerli.chainId,
@@ -20,10 +22,11 @@ document.head.appendChild(
 );
 
 ReactDOM.render(
-	<React.StrictMode>
+	<StrictMode>
 		<DAppProvider config={config}>
 			<App />
+			<ColorModeScript initialColorMode={theme.config.initialColorMode} />
 		</DAppProvider>
-	</React.StrictMode>,
+	</StrictMode>,
 	document.getElementById('root')
 );

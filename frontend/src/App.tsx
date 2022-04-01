@@ -4,7 +4,7 @@ import { useEthers } from '@usedapp/core';
 import {} from 'query-string';
 import { Header } from './components/header/Header';
 import { Main } from './components/main/Main';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/provider';
 
 function App() {
 	const { account } = useEthers();
@@ -16,12 +16,10 @@ function App() {
 	}, [account]);
 
 	return (
-		<>
-			<ChakraProvider>
-				<Header />
-			</ChakraProvider>
+		<ChakraProvider>
+			<Header />
 			<Main />
-		</>
+		</ChakraProvider>
 	);
 }
 

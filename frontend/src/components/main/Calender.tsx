@@ -1,16 +1,9 @@
-import {
-	ChangeSet,
-	EditingState,
-	IntegratedEditing,
-	ViewState,
-} from '@devexpress/dx-react-scheduler';
-import {
-	AppointmentForm,
-	Appointments,
-	Scheduler,
-	WeekView,
-} from '@devexpress/dx-react-scheduler-material-ui';
-import React, { FC } from 'react';
+import { FC } from 'react';
+import '@fullcalendar/react/dist/vdom';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 interface Props {}
 
@@ -30,18 +23,21 @@ export const Calendar: FC<Props> = (props) => {
 
 	return (
 		<div className='calendar'>
-			<Scheduler data={schedulerData}>
-				<ViewState />
-				<EditingState onCommitChanges={saveAppointment} />
-				<IntegratedEditing />
-				<WeekView startDayHour={8} endDayHour={19} />
-				<Appointments />
-				<AppointmentForm />
-			</Scheduler>
+			<FullCalendar
+				headerToolbar={false}
+				allDaySlot={false}
+				plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+				initialView='timeGridWeek'
+				height={'auto'}
+				slotMinTime='09:00'
+				slotMaxTime='20:00'
+				dateClick={(date) => console.log(date)}
+				stickyHeaderDates={true}
+			/>
 		</div>
 	);
 };
 
-const saveAppointment = (aptData: ChangeSet) => {
+const saveAppointment = (aptData: any) => {
 	console.log('Saving appointment: ', aptData);
 };
