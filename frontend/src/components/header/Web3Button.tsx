@@ -19,38 +19,52 @@ export const Web3Button: FC<any> = (props) => {
 				<Box
 					display='flex'
 					alignItems='center'
-					background='gray.700'
+					background='#F05F57'
 					borderRadius='xl'
 					py='0'
 				>
 					<Box px='3'>
-						<Text color='white' fontSize='md'>
+						<Text fontSize='md'>
 							{balance && parseFloat(formatEther(balance)).toFixed(3)} ETH
 						</Text>
 					</Box>
 					<Button
 						onClick={props.onOpen}
-						bg='gray.800'
+						bg='#A23B4D'
+						color='white'
 						border='1px solid transparent'
 						_hover={{
 							border: '1px',
+							color: 'black',
 							borderStyle: 'solid',
-							borderColor: 'blue.400',
-							backgroundColor: 'gray.700',
+							borderColor: 'white',
+							backgroundColor: '#F05F57',
 						}}
 						borderRadius='xl'
 						m='1px'
 						px={3}
 						height='38px'
 					>
-						<Text color='white' fontSize='md' fontWeight='medium' mr='2'>
+						<Text fontSize='md' fontWeight='medium' mr='2'>
 							{ens ?? shortenAddress(account)}
 						</Text>
 						<Identicon />
 					</Button>
 				</Box>
 			) : (
-				<Button onClick={() => activateBrowserWallet()}>Connect Wallet</Button>
+				<Button
+					bg='#A23B4D'
+					color='white'
+					border='1px solid transparent'
+					boxShadow='dark-lg'
+					_hover={{
+						color: 'black',
+						backgroundColor: '#F05F57',
+					}}
+					onClick={() => activateBrowserWallet()}
+				>
+					Connect Wallet
+				</Button>
 			)}
 		</>
 	);
