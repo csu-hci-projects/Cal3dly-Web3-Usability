@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import '@fullcalendar/react/dist/vdom';
 import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
@@ -22,18 +21,20 @@ export const Calendar: FC<Props> = (props) => {
 	];
 
 	return (
-		<div className='calendar'>
-			<FullCalendar
-				headerToolbar={false}
-				allDaySlot={false}
-				plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-				initialView='timeGridWeek'
-				height={'auto'}
-				slotMinTime='09:00'
-				slotMaxTime='20:00'
-				dateClick={(date) => console.log(date)}
-				stickyHeaderDates={true}
-			/>
+		<div className='calendar-container'>
+			<div className='calendar'>
+				<FullCalendar
+					headerToolbar={false}
+					allDaySlot={false}
+					plugins={[timeGridPlugin, interactionPlugin]}
+					initialView='timeGridWeek'
+					height={'auto'}
+					slotMinTime='09:00'
+					slotMaxTime='20:00'
+					dateClick={(date) => console.log(date)}
+					dayCount={5}
+				/>
+			</div>
 		</div>
 	);
 };

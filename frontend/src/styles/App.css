@@ -33,5 +33,19 @@
   color: black;
   font-size: 1.5em;
   margin: 1.25em;
-  min-width: 100%;
+  min-width: 500px;
+}
+
+.calendar-container{
+min-width: 100%;
+overflow-x: scroll;
+}
+
+::-webkit-scrollbar {
+  height: 0;
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none;
 }
