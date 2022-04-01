@@ -20,10 +20,10 @@ document.head.appendChild(
 );
 
 ReactDOM.render(
-	<DAppProvider config={config}>
-		<React.StrictMode>
+	<React.StrictMode>
+		<DAppProvider config={config}>
 			<App />
-		</React.StrictMode>
-	</DAppProvider>,
+		</DAppProvider>
+	</React.StrictMode>,
 	document.getElementById('root')
 );
