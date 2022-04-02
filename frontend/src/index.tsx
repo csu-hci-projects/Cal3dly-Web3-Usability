@@ -10,7 +10,7 @@ const config: Config = {
 	readOnlyChainId: Goerli.chainId,
 	readOnlyUrls: {
 		[Goerli.chainId]:
-			'https://eth-goerli.alchemyapi.io/v2/RdBZNnx__NRbCfoTa2CirDNVomyZPQP6',
+			'https://eth-goerli.alchemyapi.io/v2/AxnmGEYn7VDkC4KqfNSFbSW9pHFR7PDO',
 	},
 };
 
