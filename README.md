@@ -1,15 +1,5 @@
-# Basic Sample Hardhat Project
-
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+# 🗓️ Cal3dly: Web3 Usability
+A Web3 Powered Appointment Scheduler.
+## Deployments
+- [Project Dev Deployment](https://cal3dly-dev.surge.sh/)
+- [Latest Cal3dly Smart Contract Deployment](https://goerli.etherscan.io/address/0xa81203EE62320213EAd6C97Ea966EE5Cd62ffE37)

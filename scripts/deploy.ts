@@ -20,7 +20,6 @@ async function main() {
 	await contract.deployed();
 
 	console.log('Cal3dly deployed to: ', contract.address);
-	//https://goerli.etherscan.io/address/0xa81203EE62320213EAd6C97Ea966EE5Cd62ffE37
 }
 
 // We recommend this pattern to be able to use async/await everywhere
