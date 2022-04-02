@@ -10,7 +10,7 @@ import { formatEther } from '@ethersproject/units';
 import Identicon from './Identicon';
 
 export const Web3Button: FC<any> = (props) => {
-	const { activateBrowserWallet, account, deactivate } = useEthers();
+	const { activateBrowserWallet, account } = useEthers();
 	const balance = useEtherBalance(account);
 	const ens = useLookupAddress();
 	return (

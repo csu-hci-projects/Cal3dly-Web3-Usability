@@ -11,9 +11,8 @@ export const Header: FC = () => {
 		<div className='header'>
 			<div className='header-contents'>
 				<Heading letterSpacing='wide' color='#fff'>
-					🗓️ {size.width > 450 ? 'Cal3dly' : ''}
+					🗓️ {size.width > 450 && 'Cal3dly'}
 				</Heading>
-
 				<Web3Button onOpen={onOpen} />
 				<AccountModal isOpen={isOpen} onClose={onClose} />
 			</div>
