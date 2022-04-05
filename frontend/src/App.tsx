@@ -26,7 +26,7 @@ function App() {
 	return (
 		<ChakraProvider>
 			<Header />
-			<Main />
+			<Main owner={owner} />
 		</ChakraProvider>
 	);
 }

@@ -3,11 +3,10 @@ import { useCall } from '@usedapp/core';
 import * as abi from '../abis/Cal3dly.json';
 import { cal3dlyContractAddress } from '..';
 
-const cal3dlyContractInterface = new ethers.utils.Interface(
-	JSON.stringify(abi.abi)
-);
-
 export function useGetAppointments(address: string | null | undefined) {
+	const cal3dlyContractInterface = new ethers.utils.Interface(
+		JSON.stringify(abi.abi)
+	);
 	const { value, error } =
 		useCall(
 			cal3dlyContractAddress && {
