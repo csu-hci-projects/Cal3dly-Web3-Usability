@@ -3,7 +3,11 @@ import { Calendar } from './Calender';
 import { useEthers } from '@usedapp/core';
 import { Center, Text } from '@chakra-ui/react';
 
-export const Main: FC = () => {
+interface Props {
+	owner: string | null | undefined;
+}
+
+export const Main: FC<Props> = ({ owner }) => {
 	const { account } = useEthers();
 	return (
 		<div className='main-content-area'>
@@ -14,7 +18,7 @@ export const Main: FC = () => {
 						<Text fontSize='md'>A Web3 Powered Appointment Scheduler</Text>
 					</div>
 				)}
-				{account && <Calendar />}
+				{account && <Calendar owner={owner} />}
 			</Center>
 		</div>
 	);

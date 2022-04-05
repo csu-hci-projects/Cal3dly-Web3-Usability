@@ -1,21 +1,30 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import '@fullcalendar/react/dist/vdom';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { useGetAppointments } from '../../hooks/useCal3dly';
 
-interface Props {}
+interface Props {
+	owner: string | null | undefined;
+}
 
-export const Calendar: FC<Props> = (props) => {
+export const Calendar: FC<Props> = ({ owner }) => {
+	const apts = useGetAppointments(owner);
+
+	useEffect(() => {
+		console.log(apts);
+	}, [apts]);
+
 	const schedulerData = [
 		{
-			startDate: '2022-03-30T09:45',
-			endDate: '2022-03-30T11:00',
+			start: '2022-04-07T09:45',
+			end: '2022-04-07T11:00',
 			title: 'Dogecoin Integration',
 		},
 		{
-			startDate: '2022-03-31T12:00',
-			endDate: '2022-03-31T13:30',
+			start: '2022-04-09T12:00',
+			end: '2022-04-09T13:30',
 			title: 'Test',
 		},
 	];
@@ -33,6 +42,7 @@ export const Calendar: FC<Props> = (props) => {
 					slotMaxTime='20:00'
 					dateClick={(date) => console.log(date)}
 					dayCount={5}
+					events={schedulerData}
 				/>
 			</div>
 		</div>
