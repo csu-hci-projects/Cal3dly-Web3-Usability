@@ -6,6 +6,9 @@ import { DAppProvider, Config, Goerli } from '@usedapp/core';
 import { ColorModeScript } from '@chakra-ui/react';
 import { theme } from './styles/theme';
 
+export const cal3dlyContractAddress =
+	'0x63b3B3F2E0353C22D823b7731Fe1c373ABB48DD9';
+
 const config: Config = {
 	readOnlyChainId: Goerli.chainId,
 	readOnlyUrls: {
