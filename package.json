@@ -8,15 +8,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/csu-hci-projects/Tokenized-Learning.git"
+		"url": "git+https://github.com/csu-hci-projects/Cal3dly-Web3-Usability.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/csu-hci-projects/Tokenized-Learning/issues"
+		"url": "https://github.com/csu-hci-projects/Cal3dly-Web3-Usability/issues"
 	},
-	"homepage": "https://github.com/csu-hci-projects/Tokenized-Learning#readme",
+	"homepage": "https://github.com/csu-hci-projects/Cal3dly-Web3-Usability#readme",
 	"devDependencies": {
 		"@nomiclabs/hardhat-ethers": "^2.0.5",
 		"@nomiclabs/hardhat-waffle": "^2.0.3",
