@@ -3,7 +3,10 @@ import '@fullcalendar/react/dist/vdom';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useGetAppointments } from '../../hooks/useCal3dly';
+import {
+	useGetAppointments,
+	useCal3dlyContractMethod,
+} from '../../hooks/useCal3dly';
 
 interface Props {
 	owner: string | null | undefined;
@@ -11,10 +14,26 @@ interface Props {
 
 export const Calendar: FC<Props> = ({ owner }) => {
 	const apts = useGetAppointments(owner);
+	const { state: appointmentStatus, send: addAppointment } =
+		useCal3dlyContractMethod('addAppointment');
 
-	useEffect(() => {
-		console.log(apts);
-	}, [apts]);
+	// useEffect(() => {
+	// 	addAppointment(
+	// 		owner,
+	// 		'Test',
+	// 		'blank',
+	// 		new Date('April 6, 2022 15:30:00').getTime() / 1000,
+	// 		new Date('April 6, 2022 16:00:00').getTime() / 1000
+	// 	);
+	// }, []);
+
+	// useEffect(() => {
+	// 	console.log(appointmentStatus);
+	// }, [appointmentStatus]);
+
+	// useEffect(() => {
+	// 	console.log(apts);
+	// }, [apts]);
 
 	const schedulerData = [
 		{

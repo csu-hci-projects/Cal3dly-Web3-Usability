@@ -1,5 +1,5 @@
 import { Contract, ethers } from 'ethers';
-import { useCall } from '@usedapp/core';
+import { useCall, useContractFunction } from '@usedapp/core';
 import * as abi from '../abis/Cal3dly.json';
 import { cal3dlyContractAddress } from '..';
 
@@ -20,7 +20,26 @@ export function useGetAppointments(address: string | null | undefined) {
 		) ?? {};
 	if (error) {
 		console.error(error);
-		return undefined;
+		return [];
 	}
 	return value?.[0];
+}
+
+type Cal3dlyContractMethodNames =
+	| 'getAppointments'
+	| 'addAppointment'
+	| 'cancelAppointment';
+
+export function useCal3dlyContractMethod(
+	methodName: Cal3dlyContractMethodNames
+) {
+	const cal3dlyContractInterface = new ethers.utils.Interface(
+		JSON.stringify(abi.abi)
+	);
+	const cal3dlyContract = new Contract(
+		cal3dlyContractAddress,
+		cal3dlyContractInterface
+	);
+	const { state, send } = useContractFunction(cal3dlyContract, methodName, {});
+	return { state, send };
 }
