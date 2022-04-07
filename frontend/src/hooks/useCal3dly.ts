@@ -2,8 +2,9 @@ import { Contract, ethers } from 'ethers';
 import { useCall, useContractFunction } from '@usedapp/core';
 import * as abi from '../abis/Cal3dly.json';
 import { cal3dlyContractAddress } from '..';
+import { Address } from '../App';
 
-export function useGetAppointments(address: string | null | undefined) {
+export function useGetAppointments(address: Address) {
 	const cal3dlyContractInterface = new ethers.utils.Interface(
 		JSON.stringify(abi.abi)
 	);

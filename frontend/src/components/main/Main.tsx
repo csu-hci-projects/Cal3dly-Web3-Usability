@@ -2,9 +2,10 @@ import { FC } from 'react';
 import { Calendar } from './Calender';
 import { useEthers } from '@usedapp/core';
 import { Center, Text } from '@chakra-ui/react';
+import { Address } from '../../App';
 
 interface Props {
-	owner: string | null | undefined;
+	owner: Address;
 }
 
 export const Main: FC<Props> = ({ owner }) => {

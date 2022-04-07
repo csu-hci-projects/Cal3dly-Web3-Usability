@@ -6,9 +6,11 @@ import { Main } from './components/main/Main';
 import { ChakraProvider } from '@chakra-ui/provider';
 import { setQueryString } from './services/queryString';
 
+export type Address = string | null | undefined;
+
 function App() {
 	const { account } = useEthers();
-	const [owner, setOwner] = useState<string | null | undefined>();
+	const [owner, setOwner] = useState<Address>();
 
 	useEffect(() => {
 		const queryParams = new URLSearchParams(window.location.search);
