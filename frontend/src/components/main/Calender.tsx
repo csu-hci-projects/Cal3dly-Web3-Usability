@@ -1,21 +1,27 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import '@fullcalendar/react/dist/vdom';
-import FullCalendar from '@fullcalendar/react';
+import FullCalendar, { EventInput } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {
 	useGetAppointments,
 	useCal3dlyContractMethod,
 } from '../../hooks/useCal3dly';
+import { useEthers } from '@usedapp/core';
+import { Address } from '../../App';
+import { useDisclosure } from '@chakra-ui/react';
 
 interface Props {
-	owner: string | null | undefined;
+	owner: Address;
 }
 
 export const Calendar: FC<Props> = ({ owner }) => {
-	const apts = useGetAppointments(owner);
+	const { account } = useEthers();
+	const rawApts = useGetAppointments(owner);
 	const { state: appointmentStatus, send: addAppointment } =
 		useCal3dlyContractMethod('addAppointment');
+	const [apts, setApts] = useState<EventInput[]>(formatApts(rawApts, owner));
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	// useEffect(() => {
 	// 	addAppointment(
@@ -34,6 +40,12 @@ export const Calendar: FC<Props> = ({ owner }) => {
 	// useEffect(() => {
 	// 	console.log(apts);
 	// }, [apts]);
+
+	useEffect(() => {
+		if (rawApts) {
+			setApts(formatApts(rawApts, owner));
+		}
+	}, [rawApts]);
 
 	const schedulerData = [
 		{
@@ -61,11 +73,29 @@ export const Calendar: FC<Props> = ({ owner }) => {
 					slotMaxTime='20:00'
 					dateClick={(date) => console.log(date)}
 					dayCount={5}
-					events={schedulerData}
+					events={[...schedulerData, ...apts]}
+					select={(e) => console.log(e)}
 				/>
 			</div>
 		</div>
 	);
+};
+
+const formatApts = (rawApts: any[], owner: Address): EventInput[] => {
+	return rawApts?.length
+		? [
+				...rawApts.map((apt: any) => {
+					return {
+						title: apt.title,
+						start: new Date(apt.startTime * 1000),
+						end: new Date(apt.endTime * 1000),
+						extendedProps: {
+							attendees: [apt.attendee, owner],
+						},
+					};
+				}),
+		  ]
+		: [];
 };
 
 const saveAppointment = (aptData: any) => {
