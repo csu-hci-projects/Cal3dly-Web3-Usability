@@ -77,12 +77,10 @@ export const Calendar: FC<Props> = ({ owner }) => {
 						height={'auto'}
 						slotMinTime='09:00'
 						slotMaxTime='20:00'
-						dateClick={(date) => {
-							console.log(date);
-							setSelectedDate(new Cal3dlyAppointment(date.date));
-							onOpen();
-						}}
-						dayCount={5}
+						dateClick={(date) =>
+							dateClicked(owner, date.date, onOpen, setSelectedDate)
+						}
+						eventClick={(date) => console.log(date.event)}
 						events={[...schedulerData, ...apts]}
 					/>
 				</div>
@@ -105,12 +103,25 @@ const formatApts = (rawApts: any[], owner: Address): EventInput[] => {
 						start: new Date(apt.startTime * 1000),
 						end: new Date(apt.endTime * 1000),
 						extendedProps: {
+							owner: owner,
 							attendees: [apt.attendee, owner],
 						},
 					};
 				}),
 		  ]
 		: [];
+};
+
+const dateClicked = (
+	owner: Address,
+	date: Date,
+	onOpen: () => void,
+	setSelectedDate: (
+		value: React.SetStateAction<Cal3dlyAppointment | undefined>
+	) => void
+) => {
+	setSelectedDate(new Cal3dlyAppointment(owner ?? '', date));
+	onOpen();
 };
 
 const saveAppointment = (aptData: any) => {
