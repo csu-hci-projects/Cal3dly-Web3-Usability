@@ -8,7 +8,7 @@ import {
 	useCal3dlyContractMethod,
 } from '../../hooks/useCal3dly';
 import { useEthers } from '@usedapp/core';
-import { Address } from '../../App';
+import { Address } from '../../types';
 import { useDisclosure } from '@chakra-ui/react';
 import AppointmentModal from './AppointmentModal';
 import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';

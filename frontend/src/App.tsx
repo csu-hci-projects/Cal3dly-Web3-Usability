@@ -5,9 +5,7 @@ import { Header } from './components/header/Header';
 import { Main } from './components/main/Main';
 import { ChakraProvider } from '@chakra-ui/provider';
 import { setQueryString } from './services/queryString';
-
-export type Address = string | null | undefined;
-
+import { Address } from './types';
 function App() {
 	const { account } = useEthers();
 	const [owner, setOwner] = useState<Address>();

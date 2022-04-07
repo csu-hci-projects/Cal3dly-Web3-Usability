@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Calendar } from './Calender';
 import { useEthers } from '@usedapp/core';
 import { Center, Text } from '@chakra-ui/react';
-import { Address } from '../../App';
+import { Address } from '../../types';
 
 interface Props {
 	owner: Address;
