@@ -10,9 +10,7 @@ contract Cal3dly {
         address attendee;
     }
 
-    mapping(address => Appointment[]) public apts;
-
-    constructor() {}
+    mapping(address => Appointment[]) apts;
 
     function getAppointments(address _owner)
         public
