@@ -33,8 +33,8 @@ export const Calendar: FC<Props> = ({ owner }) => {
 	// 		owner,
 	// 		'Test',
 	// 		'blank',
-	// 		new Date('April 6, 2022 15:30:00').getTime() / 1000,
-	// 		new Date('April 6, 2022 16:00:00').getTime() / 1000
+	// 		new Date('April 14, 2022 15:30:00').getTime() / 1000,
+	// 		new Date('April 14, 2022 16:00:00').getTime() / 1000
 	// 	);
 	// }, []);
 
@@ -54,13 +54,13 @@ export const Calendar: FC<Props> = ({ owner }) => {
 
 	const schedulerData = [
 		{
-			start: '2022-04-07T09:45',
-			end: '2022-04-07T11:00',
+			start: '2022-04-16T09:45',
+			end: '2022-04-16T11:00',
 			title: 'Dogecoin Integration',
 		},
 		{
-			start: '2022-04-09T12:00',
-			end: '2022-04-09T13:30',
+			start: '2022-04-13T12:00',
+			end: '2022-04-13T13:30',
 			title: 'Test',
 		},
 	];
@@ -77,9 +77,11 @@ export const Calendar: FC<Props> = ({ owner }) => {
 						height={'auto'}
 						slotMinTime='09:00'
 						slotMaxTime='20:00'
-						dateClick={(date) =>
-							dateClicked(owner, date.date, onOpen, setSelectedDate)
-						}
+						dateClick={(date) => {
+							date.date >= new Date()
+								? dateClicked(owner, date.date, onOpen, setSelectedDate)
+								: null;
+						}}
 						eventClick={(date) => console.log(date.event)}
 						events={[...schedulerData, ...apts]}
 					/>
@@ -89,6 +91,7 @@ export const Calendar: FC<Props> = ({ owner }) => {
 				isOpen={isOpen}
 				onClose={onClose}
 				appointment={selectedDate}
+				setAppointment={setSelectedDate}
 			/>
 		</>
 	);
