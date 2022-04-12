@@ -93,7 +93,10 @@ describe('Cal3dly', () => {
 		);
 		await tx.wait();
 
-		const tx2 = await contract['cancelAppointment(address)'](tx.from);
+		const tx2 = await contract['cancelAppointment(string,address)'](
+			'Appointment with Professor Ortega',
+			tx.from
+		);
 		await tx2.wait();
 
 		const appointments = await contract.getAppointments(owner.address);

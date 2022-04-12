@@ -51,10 +51,14 @@ contract Cal3dly {
         }
     }
 
-    function cancelAppointment(address _attendee) public {
+    function cancelAppointment(string memory _title, address _attendee) public {
         Appointment[] memory userApts = apts[msg.sender];
         for (uint256 i = 0; i < userApts.length; i++) {
-            if (userApts[i].attendee == _attendee) {
+            if (
+                userApts[i].attendee == _attendee &&
+                (keccak256(abi.encodePacked(userApts[i].title)) ==
+                    keccak256(abi.encodePacked(_title)))
+            ) {
                 delete apts[msg.sender][i];
                 break;
             }
