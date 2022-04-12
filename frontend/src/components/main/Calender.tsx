@@ -3,10 +3,7 @@ import '@fullcalendar/react/dist/vdom';
 import FullCalendar, { EventInput } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import {
-	useGetAppointments,
-	useCal3dlyContractMethod,
-} from '../../hooks/useCal3dly';
+import { useGetAppointments } from '../../hooks/useCal3dly';
 import { useEthers } from '@usedapp/core';
 import { Address } from '../../types';
 import { useDisclosure } from '@chakra-ui/react';
@@ -20,50 +17,17 @@ interface Props {
 export const Calendar: FC<Props> = ({ owner }) => {
 	const { account } = useEthers();
 	const rawApts = useGetAppointments(owner);
-	const { state: appointmentStatus, send: addAppointment } =
-		useCal3dlyContractMethod('addAppointment');
 	const [apts, setApts] = useState<EventInput[]>(formatApts(rawApts, owner));
 	const [selectedDate, setSelectedDate] = useState<
 		Cal3dlyAppointment | undefined
 	>();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	// useEffect(() => {
-	// 	addAppointment(
-	// 		owner,
-	// 		'Test',
-	// 		'blank',
-	// 		new Date('April 14, 2022 15:30:00').getTime() / 1000,
-	// 		new Date('April 14, 2022 16:00:00').getTime() / 1000
-	// 	);
-	// }, []);
-
-	// useEffect(() => {
-	// 	console.log(appointmentStatus);
-	// }, [appointmentStatus]);
-
-	// useEffect(() => {
-	// 	console.log(apts);
-	// }, [apts]);
-
 	useEffect(() => {
 		if (rawApts) {
 			setApts(formatApts(rawApts, owner));
 		}
 	}, [rawApts]);
-
-	const schedulerData = [
-		{
-			start: '2022-04-16T09:45',
-			end: '2022-04-16T11:00',
-			title: 'Dogecoin Integration',
-		},
-		{
-			start: '2022-04-13T12:00',
-			end: '2022-04-13T13:30',
-			title: 'Test',
-		},
-	];
 
 	return (
 		<>
@@ -83,7 +47,7 @@ export const Calendar: FC<Props> = ({ owner }) => {
 								: null;
 						}}
 						eventClick={(date) => console.log(date.event)}
-						events={[...schedulerData, ...apts]}
+						events={[...apts]}
 					/>
 				</div>
 			</div>

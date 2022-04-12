@@ -36,8 +36,7 @@ export default function AppointmentModal(props: Props) {
 			<ModalContent
 				bgGradient='linear(135deg, #F05F57 10%, #360940 100%)'
 				border='1px'
-				borderStyle='solid'
-				borderColor='gray.700'
+				borderColor='edf2f7'
 				borderRadius='3xl'
 			>
 				<AppointmentHeader />
