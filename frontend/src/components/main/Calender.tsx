@@ -41,12 +41,17 @@ export const Calendar: FC<Props> = ({ owner }) => {
 						height={'auto'}
 						slotMinTime='09:00'
 						slotMaxTime='20:00'
+						forceEventDuration
 						dateClick={(date) => {
 							date.date >= new Date()
 								? dateClicked(owner, date.date, onOpen, setSelectedDate)
 								: null;
 						}}
-						eventClick={(date) => console.log(date.event)}
+						eventClick={(date) => {
+							accountHasAccess(account, date.event.extendedProps.attendees)
+								? eventClicked(date.event, onOpen, setSelectedDate)
+								: null;
+						}}
 						events={[...apts]}
 					/>
 				</div>
@@ -70,6 +75,7 @@ const formatApts = (rawApts: any[], owner: Address): EventInput[] => {
 						start: new Date(apt.startTime * 1000),
 						end: new Date(apt.endTime * 1000),
 						extendedProps: {
+							description: apt.description,
 							owner: owner,
 							attendees: [apt.attendee, owner],
 						},
@@ -87,10 +93,30 @@ const dateClicked = (
 		value: React.SetStateAction<Cal3dlyAppointment | undefined>
 	) => void
 ) => {
-	setSelectedDate(new Cal3dlyAppointment(owner ?? '', date));
+	setSelectedDate(new Cal3dlyAppointment(owner ?? '', date.getTime() / 1000));
 	onOpen();
 };
 
-const saveAppointment = (aptData: any) => {
-	console.log('Saving appointment: ', aptData);
-};
+function accountHasAccess(account: Address, attendees: Address[]) {
+	return attendees.includes(account);
+}
+
+function eventClicked(
+	event: any,
+	onOpen: () => void,
+	setSelectedDate: (
+		value: React.SetStateAction<Cal3dlyAppointment | undefined>
+	) => void
+) {
+	setSelectedDate(
+		new Cal3dlyAppointment(
+			event.extendedProps.owner,
+			event.start?.getTime() / 1000,
+			event.end?.getTime() / 1000,
+			event.title,
+			event.extendedProps.description,
+			event.extendedProps.attendees
+		)
+	);
+	onOpen();
+}

@@ -17,6 +17,8 @@ import DatePicker from 'react-datepicker';
 import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
+import { shortenAddress, useEthers } from '@usedapp/core';
+import { Address } from '../../types';
 
 interface Props {
 	isOpen: boolean;
@@ -28,8 +30,21 @@ interface Props {
 }
 
 export default function AppointmentModal(props: Props) {
+	const [readOnly, setReadOnly] = useState<boolean>(
+		isValidAppointment(props.appointment)
+	);
+	useEffect(() => {
+		setReadOnly(isValidAppointment(props.appointment));
+	}, [props.isOpen]);
+	const { account } = useEthers();
 	const { state: appointmentStatus, send: addAppointment } =
 		useCal3dlyContractMethod('addAppointment');
+	const { state: cancelledAppointmentStatus, send: cancelAppointment } =
+		useCal3dlyContractMethod(
+			account === props.appointment?.owner
+				? 'cancelAppointment(string,address)'
+				: 'cancelAppointment(address,string)'
+		);
 	return (
 		<Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
 			<ModalOverlay />
@@ -44,6 +59,10 @@ export default function AppointmentModal(props: Props) {
 					appointment={props.appointment}
 					setAppointment={props.setAppointment}
 					addAppointment={addAppointment}
+					cancelAppointment={cancelAppointment}
+					onClose={props.onClose}
+					readOnly={readOnly}
+					account={account}
 				/>
 			</ModalContent>
 		</Modal>
@@ -53,12 +72,15 @@ export default function AppointmentModal(props: Props) {
 function AppointmentHeader() {
 	return (
 		<>
-			<ModalHeader color='white' px={4} fontSize='lg' fontWeight='medium'>
+			<ModalHeader color='white' px={4} fontSize='lg' fontWeight='bold'>
 				Appointment Details
 			</ModalHeader>
 			<ModalCloseButton
 				color='white'
 				fontSize='sm'
+				_focus={{
+					outlineColor: '#82C6F4',
+				}}
 				_hover={{
 					color: '#F05F57',
 				}}
@@ -73,17 +95,24 @@ interface AptBodyProps {
 		React.SetStateAction<Cal3dlyAppointment | undefined>
 	>;
 	addAppointment: (...args: any[]) => Promise<void>;
+	cancelAppointment: (...args: any[]) => Promise<void>;
+	onClose: () => void;
+	readOnly: boolean;
+	account: Address;
 }
 
 function AppointmentBody(props: AptBodyProps) {
-	const [defaultEndTime, setDefaultEndTime] = useState<string>('');
+	const [defaultEndTime, setDefaultEndTime] = useState<Date>();
+	const lowerBound = new Date();
+	lowerBound.setHours(8);
+	lowerBound.setMinutes(0);
 	useEffect(() => {
 		let endTime = props.appointment
 			? new Date(props.appointment.startTime * 1000)
 			: new Date();
 		endTime.setMinutes(endTime.getMinutes() + 30);
 		setEndTime(props.appointment, props.setAppointment, endTime);
-		setDefaultEndTime(endTime.toTimeString().split(' ')[0]);
+		setDefaultEndTime(endTime);
 	}, []);
 
 	return (
@@ -97,7 +126,6 @@ function AppointmentBody(props: AptBodyProps) {
 				pt={4}
 				pb={2}
 				mb={3}
-				overflow=''
 			>
 				<Flex>
 					<Flex mr='2'>
@@ -110,6 +138,8 @@ function AppointmentBody(props: AptBodyProps) {
 							maxWidth='115px'
 							size='xs'
 							placeholder='Appointment Title'
+							defaultValue={props.appointment?.title}
+							disabled={props.readOnly}
 							bg='#edf2f7'
 							focusBorderColor='#82C6F4'
 							onChange={(input) =>
@@ -142,6 +172,7 @@ function AppointmentBody(props: AptBodyProps) {
 								}
 								showTimeInput
 								timeInputLabel='Start Time'
+								disabled={props.readOnly}
 								minDate={new Date()}
 								dateFormat='MM/dd/yyyy h:mm aa'
 								onChange={(date) =>
@@ -158,20 +189,26 @@ function AppointmentBody(props: AptBodyProps) {
 									/>
 								}
 							/>
-
-							<Input
-								mt='5px'
-								type='time'
-								bg='#edf2f7'
-								defaultValue={defaultEndTime}
-								focusBorderColor='#82C6F4'
-								size='xs'
-								onChange={(input) =>
-									setEndTime(
-										props.appointment,
-										props.setAppointment,
-										input.target.valueAsDate
-									)
+							<DatePicker
+								selected={defaultEndTime}
+								showTimeSelect
+								showTimeSelectOnly
+								timeInputLabel='End Time'
+								disabled={props.readOnly}
+								minTime={getMinTime()}
+								maxTime={getMaxTime()}
+								dateFormat='MM/dd/yyyy h:mm aa'
+								customInput={
+									<Input
+										bg='#edf2f7'
+										width='100%'
+										size='xs'
+										focusBorderColor='#82C6F4'
+										fontFamily='inherit'
+									/>
+								}
+								onChange={(date) =>
+									setEndTime(props.appointment, props.setAppointment, date)
 								}
 							/>
 						</Flex>
@@ -186,6 +223,8 @@ function AppointmentBody(props: AptBodyProps) {
 						placeholder="What's your meeting about?"
 						resize='none'
 						focusBorderColor='#82C6F4'
+						defaultValue={props.appointment?.description}
+						disabled={props.readOnly}
 						onChange={(input) =>
 							setAppointmentDescription(
 								props.appointment,
@@ -195,47 +234,109 @@ function AppointmentBody(props: AptBodyProps) {
 						}
 					/>
 				</Flex>
+				{props.appointment?.attendees?.length && props.readOnly && (
+					<Flex width='100%' pt='2' justifyContent='center'>
+						<Text color='white' fontSize='md' fontWeight='bold'>
+							Meeting between you and{' '}
+							{getOtherAttendee(props.account, props.appointment.attendees)}.
+						</Text>
+					</Flex>
+				)}
 			</Box>
-			<SubmitButton
-				appointment={props.appointment}
-				setAppointment={props.setAppointment}
-				addAppointment={props.addAppointment}
-			/>
+			<SubmitButton {...props} />
 		</ModalBody>
 	);
 }
 
 function SubmitButton(props: AptBodyProps) {
+	const { appointment, readOnly } = props;
 	return (
 		<Flex justifyContent='flex-end'>
-			<Button
-				bg='#591945'
-				color='white'
-				border='1px solid white'
-				boxShadow='dark-lg'
-				alignContent='center'
-				onClick={() => scheduleAppointment(props)}
-				_hover={{
-					color: 'black',
-					backgroundColor: '#F05F57',
-				}}
-			>
-				Schedule
-			</Button>
+			{readOnly ? (
+				<Button
+					bg='#F05F57'
+					color='white'
+					border='1px solid white'
+					boxShadow='dark-lg'
+					alignContent='center'
+					disabled={
+						(props.appointment?.startTime || 0) < new Date().getTime() / 1000
+					}
+					onClick={() => cancelAppointment(props)}
+					_hover={{
+						backgroundColor: '#591945',
+					}}
+				>
+					Cancel Appointment
+				</Button>
+			) : (
+				<Button
+					bg='#591945'
+					color='white'
+					border='1px solid white'
+					boxShadow='dark-lg'
+					alignContent='center'
+					disabled={!isValidAppointment(appointment)}
+					onClick={() => scheduleAppointment(props)}
+					_hover={{
+						color: 'black',
+						backgroundColor: '#F05F57',
+					}}
+				>
+					Schedule
+				</Button>
+			)}
 		</Flex>
 	);
 }
 
+function isValidAppointment(
+	appointment: Cal3dlyAppointment | undefined
+): boolean {
+	return !!(
+		appointment?.title?.length &&
+		appointment?.startTime &&
+		appointment?.endTime
+	);
+}
+
+function getOtherAttendee(account: Address, attendees: Address[]): string {
+	const otherAttendees = attendees.filter((attendee) => attendee !== account);
+	return otherAttendees.length && otherAttendees[0]
+		? shortenAddress(otherAttendees[0])
+		: 'yourself';
+}
+
 function scheduleAppointment(props: AptBodyProps) {
-	const { appointment, setAppointment, addAppointment } = props;
+	const { appointment, setAppointment, addAppointment, onClose } = props;
 	addAppointment(
 		appointment?.owner,
 		appointment?.title,
-		appointment?.description,
+		appointment?.description || '',
 		appointment?.startTime,
 		appointment?.endTime
 	);
 	setAppointment(undefined);
+	onClose();
+}
+
+function cancelAppointment(props: AptBodyProps) {
+	const { account, appointment, cancelAppointment, setAppointment, onClose } =
+		props;
+	if (appointment) {
+		if (account === appointment.owner) {
+			cancelAppointment(
+				appointment.title,
+				appointment.attendees?.filter(
+					(attendee) => attendee !== appointment.owner
+				)[0] ?? appointment.owner
+			);
+		} else {
+			cancelAppointment(appointment.owner, appointment.title);
+		}
+		setAppointment(undefined);
+		onClose();
+	}
 }
 
 function setAppointmentTitle(
@@ -275,15 +376,9 @@ function setEndTime(
 	>,
 	endTime: Date | null
 ) {
-	let temp = new Date(appointment ? appointment.startTime * 1000 : 0);
-	if (endTime?.getTime()) {
-		temp.setHours(endTime.getHours() - 5);
-		temp.setMinutes(endTime.getMinutes());
-	}
-
-	if (appointment && isValidEndTime(temp)) {
+	if (appointment && isValidEndTime(endTime)) {
 		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
-		t.endTime = temp.getTime() / 1000;
+		t.endTime = (endTime?.getTime() || 0) / 1000;
 		setAppointment(t);
 	}
 }
@@ -307,4 +402,21 @@ function setAppointmentDescription(
 		t.description = description;
 		setAppointment(t);
 	}
+}
+
+function getMinTime(): Date {
+	let today = new Date();
+	if (today.getHours() < 9) {
+		today.setHours(9);
+		today.setMinutes(0);
+		return today;
+	}
+	return today;
+}
+
+function getMaxTime(): Date {
+	let today = new Date();
+	today.setHours(20);
+	today.setMinutes(0);
+	return today;
 }
