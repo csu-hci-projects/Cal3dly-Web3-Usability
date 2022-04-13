@@ -35,17 +35,31 @@ contract Cal3dly {
             msg.sender
         );
         apts[_owner].push(apt);
+        apt.attendee = _owner;
+        apts[msg.sender].push(apt);
     }
 
     function cancelAppointment(address _owner, string memory _title) public {
-        Appointment[] memory userApts = apts[_owner];
-        for (uint256 i = 0; i < userApts.length; i++) {
+        Appointment[] memory ownerApts = apts[_owner];
+        for (uint256 i = 0; i < ownerApts.length; i++) {
             if (
-                userApts[i].attendee == msg.sender &&
-                (keccak256(abi.encodePacked(userApts[i].title)) ==
+                ownerApts[i].attendee == msg.sender &&
+                (keccak256(abi.encodePacked(ownerApts[i].title)) ==
                     keccak256(abi.encodePacked(_title)))
             ) {
                 delete apts[_owner][i];
+                break;
+            }
+        }
+
+        Appointment[] memory userApts = apts[msg.sender];
+        for (uint256 i = 0; i < userApts.length; i++) {
+            if (
+                userApts[i].attendee == _owner &&
+                (keccak256(abi.encodePacked(userApts[i].title)) ==
+                    keccak256(abi.encodePacked(_title)))
+            ) {
+                delete apts[msg.sender][i];
                 break;
             }
         }
@@ -60,6 +74,18 @@ contract Cal3dly {
                     keccak256(abi.encodePacked(_title)))
             ) {
                 delete apts[msg.sender][i];
+                break;
+            }
+        }
+
+        Appointment[] memory ownerApts = apts[_attendee];
+        for (uint256 i = 0; i < ownerApts.length; i++) {
+            if (
+                ownerApts[i].attendee == msg.sender &&
+                (keccak256(abi.encodePacked(ownerApts[i].title)) ==
+                    keccak256(abi.encodePacked(_title)))
+            ) {
+                delete apts[_attendee][i];
                 break;
             }
         }

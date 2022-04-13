@@ -31,8 +31,11 @@ describe('Cal3dly', () => {
 		);
 		await tx2.wait();
 
-		const appointments = await contract.getAppointments(address1.address);
+		const userAppointments = await contract.getAppointments(address1.address);
 
+		expect(userAppointments.length).to.equal(2);
+
+		const appointments = await contract.getAppointments(tx2.from);
 		expect(appointments.length).to.equal(2);
 	});
 
@@ -77,8 +80,12 @@ describe('Cal3dly', () => {
 		);
 		await tx2.wait();
 
-		const appointments = await contract.getAppointments(address1.address);
-		expect(appointments[0].attendee).to.equal(
+		const ownerAppointments = await contract.getAppointments(address1.address);
+		expect(ownerAppointments[0].attendee).to.equal(
+			'0x0000000000000000000000000000000000000000'
+		);
+		const attendeeAppointments = await contract.getAppointments(tx.from);
+		expect(attendeeAppointments[0].attendee).to.equal(
 			'0x0000000000000000000000000000000000000000'
 		);
 	});
@@ -99,8 +106,13 @@ describe('Cal3dly', () => {
 		);
 		await tx2.wait();
 
-		const appointments = await contract.getAppointments(owner.address);
-		expect(appointments[0].attendee).to.equal(
+		const ownerAppointments = await contract.getAppointments(owner.address);
+		expect(ownerAppointments[0].attendee).to.equal(
+			'0x0000000000000000000000000000000000000000'
+		);
+
+		const attendeeAppointments = await contract.getAppointments(tx.from);
+		expect(attendeeAppointments[0].attendee).to.equal(
 			'0x0000000000000000000000000000000000000000'
 		);
 	});
