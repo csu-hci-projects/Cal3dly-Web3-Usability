@@ -7,7 +7,7 @@ import { ColorModeScript } from '@chakra-ui/react';
 import { theme } from './styles/theme';
 
 export const cal3dlyContractAddress =
-	'0x27e5a30bD495b4D1889E708f17B2f7d3B56797CA';
+	'0x376A043Ad8b7991fcB4Dc1a4DcAfB83d81056CB9';
 
 const config: Config = {
 	readOnlyChainId: Goerli.chainId,

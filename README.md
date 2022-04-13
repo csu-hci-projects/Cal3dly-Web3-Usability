@@ -2,7 +2,7 @@
 A Web3 Powered Appointment Scheduler.
 ## Deployments
 - [Project Dev Deployment](https://cal3dly-dev.surge.sh/)
-- [Latest Cal3dly Smart Contract Deployment](https://goerli.etherscan.io/address/0x27e5a30bD495b4D1889E708f17B2f7d3B56797CA)
+- [Latest Cal3dly Smart Contract Deployment](https://goerli.etherscan.io/address/0x376A043Ad8b7991fcB4Dc1a4DcAfB83d81056CB9)
 
 ## Checkpoint 1
 - [Checkpoint 1 Demo and Progress Video](https://user-images.githubusercontent.com/55670960/161801372-5bc15a71-b733-4cf9-9eba-ff6ed93fe9c8.mp4)

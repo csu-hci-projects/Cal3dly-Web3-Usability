@@ -35,8 +35,10 @@ contract Cal3dly {
             msg.sender
         );
         apts[_owner].push(apt);
-        apt.attendee = _owner;
-        apts[msg.sender].push(apt);
+        if (msg.sender != _owner) {
+            apt.attendee = _owner;
+            apts[msg.sender].push(apt);
+        }
     }
 
     function cancelAppointment(address _owner, string memory _title) public {
