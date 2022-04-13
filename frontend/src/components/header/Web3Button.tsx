@@ -25,7 +25,7 @@ export const Web3Button: FC<any> = (props) => {
 				>
 					<Box px='3'>
 						<Text fontSize='md'>
-							{balance && parseFloat(formatEther(balance)).toFixed(3)} ETH
+							{balance && parseFloat(formatEther(balance)).toFixed(4)} ETH
 						</Text>
 					</Box>
 					<Button
