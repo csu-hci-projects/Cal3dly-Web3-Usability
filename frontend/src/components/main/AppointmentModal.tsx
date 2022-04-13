@@ -11,14 +11,26 @@ import {
 	Text,
 	Input,
 	Textarea,
+	useToast,
 } from '@chakra-ui/react';
 import { useCal3dlyContractMethod } from '../../hooks/useCal3dly';
 import DatePicker from 'react-datepicker';
 import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
-import { shortenAddress, useEthers } from '@usedapp/core';
+import {
+	shortenAddress,
+	TransactionState,
+	TransactionStatus,
+	useEthers,
+} from '@usedapp/core';
 import { Address } from '../../types';
+import {
+	FaCheckCircle,
+	FaInfoCircle,
+	FaExclamationCircle,
+} from 'react-icons/fa';
+import { Toast } from './Toast';
 
 interface Props {
 	isOpen: boolean;
@@ -33,9 +45,7 @@ export default function AppointmentModal(props: Props) {
 	const [readOnly, setReadOnly] = useState<boolean>(
 		isValidAppointment(props.appointment)
 	);
-	useEffect(() => {
-		setReadOnly(isValidAppointment(props.appointment));
-	}, [props.isOpen]);
+	const toast = useToast();
 	const { account } = useEthers();
 	const { state: appointmentStatus, send: addAppointment } =
 		useCal3dlyContractMethod('addAppointment');
@@ -45,9 +55,18 @@ export default function AppointmentModal(props: Props) {
 				? 'cancelAppointment(string,address)'
 				: 'cancelAppointment(address,string)'
 		);
+
 	useEffect(() => {
-		console.log(appointmentStatus);
-	}, [appointmentStatus]);
+		setReadOnly(isValidAppointment(props.appointment));
+	}, [props.isOpen]);
+	useEffect(() => {
+		if (isValidStatus(appointmentStatus.status)) {
+			evaluateAddToast(appointmentStatus, toast);
+		}
+		if (isValidStatus(cancelledAppointmentStatus.status)) {
+			evaluateCancelToast(cancelledAppointmentStatus, toast);
+		}
+	}, [appointmentStatus, cancelledAppointmentStatus]);
 	return (
 		<Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
 			<ModalOverlay />
@@ -452,10 +471,123 @@ function printDate(endTime: number | undefined): string | undefined {
 		let minutes: string | number = date.getMinutes();
 		const ampm = hours >= 12 ? 'PM' : 'AM';
 		hours = hours % 12;
-		hours = hours ? hours : 12; // the hour '0' should be '12'
+		hours = hours ? hours : 12;
 		minutes = minutes < 10 ? '0' + minutes : minutes;
 		const strTime =
 			month + '/' + day + '/' + year + ' ' + hours + ':' + minutes + ' ' + ampm;
 		return strTime;
 	}
+}
+
+function evaluateAddToast(appointmentStatus: TransactionStatus, toast: any) {
+	switch (appointmentStatus.status) {
+		case 'Mining':
+			toast({
+				render: () => (
+					<Toast
+						title={'Confirming your appointment on the blockchain!'}
+						mode={'info'}
+						info={
+							'Your appointment is being confirmed on the blockchain. Check its status'
+						}
+						link={`https://goerli.etherscan.io/tx/${appointmentStatus.transaction?.hash}`}
+						icon={FaInfoCircle}
+					/>
+				),
+			});
+			break;
+		case 'Success':
+			toast({
+				render: () => (
+					<Toast
+						title={'Your appointment has been made!'}
+						mode={'success'}
+						info={
+							'Your appointment has been confirmed on the blockchain. View your confirmation'
+						}
+						link={`https://goerli.etherscan.io/tx/${appointmentStatus.transaction?.hash}`}
+						icon={FaCheckCircle}
+					/>
+				),
+			});
+			break;
+		case 'Exception':
+		case 'Fail':
+			toast({
+				render: () => (
+					<Toast
+						title={'Failed to make your appointment!'}
+						mode={'error'}
+						info={
+							'Your appointment could not be confirmed on the blockchain. Please try again.'
+						}
+						link={``}
+						icon={FaExclamationCircle}
+					/>
+				),
+			});
+			break;
+		default:
+			break;
+	}
+}
+
+function evaluateCancelToast(
+	cancelledAppointmentStatus: TransactionStatus,
+	toast: any
+) {
+	switch (cancelledAppointmentStatus.status) {
+		case 'Mining':
+			toast({
+				render: () => (
+					<Toast
+						title={'Canceling your appointment on the blockchain!'}
+						mode={'info'}
+						info={
+							'Your appointment is being cancelled on the blockchain. Check its status'
+						}
+						link={`https://goerli.etherscan.io/tx/${cancelledAppointmentStatus.transaction?.hash}`}
+						icon={FaInfoCircle}
+					/>
+				),
+			});
+			break;
+		case 'Success':
+			toast({
+				render: () => (
+					<Toast
+						title={'Your appointment has been cancelled!'}
+						mode={'success'}
+						info={
+							'Your appointment has been cancelled on the blockchain. View your confirmation'
+						}
+						link={`https://goerli.etherscan.io/tx/${cancelledAppointmentStatus.transaction?.hash}`}
+						icon={FaCheckCircle}
+					/>
+				),
+			});
+			break;
+		case 'Exception':
+		case 'Fail':
+			toast({
+				render: () => (
+					<Toast
+						title={'Failed to cancel your appointment!'}
+						mode={'error'}
+						info={
+							'Your appointment could not be cancelled on the blockchain. Please try again.'
+						}
+						link={``}
+						icon={FaExclamationCircle}
+					/>
+				),
+			});
+			break;
+		default:
+			break;
+	}
+}
+
+function isValidStatus(status: TransactionState) {
+	return status !== 'None' && status !== 'PendingSignature';
 }
