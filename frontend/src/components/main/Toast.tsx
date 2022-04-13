@@ -55,7 +55,7 @@ function getColor(mode: ToasterModes): string {
 		case 'success':
 			return '#38A169';
 		case 'info':
-			return '#82c6f4';
+			return '#3182CE';
 		case 'error':
 			return '#E53E3E';
 		default:
