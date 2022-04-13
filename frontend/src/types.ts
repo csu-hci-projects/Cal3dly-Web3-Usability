@@ -5,3 +5,5 @@ export type Cal3dlyContractMethodNames =
 	| 'addAppointment'
 	| 'cancelAppointment(string,address)'
 	| 'cancelAppointment(address,string)';
+
+export type ToasterModes = 'success' | 'error' | 'info';
