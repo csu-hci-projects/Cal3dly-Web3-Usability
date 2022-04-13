@@ -106,9 +106,6 @@ interface AptBodyProps {
 
 function AppointmentBody(props: AptBodyProps) {
 	const [defaultEndTime, setDefaultEndTime] = useState<Date>();
-	const lowerBound = new Date();
-	lowerBound.setHours(8);
-	lowerBound.setMinutes(0);
 	useEffect(() => {
 		let endTime = props.appointment
 			? new Date(props.appointment.startTime * 1000)
@@ -116,7 +113,7 @@ function AppointmentBody(props: AptBodyProps) {
 		endTime.setMinutes(endTime.getMinutes() + 30);
 		setEndTime(props.appointment, props.setAppointment, endTime);
 		setDefaultEndTime(endTime);
-	}, []);
+	}, [props.appointment?.startTime]);
 
 	return (
 		<ModalBody pt={0} px={4}>
@@ -204,9 +201,7 @@ function AppointmentBody(props: AptBodyProps) {
 									printDate((defaultEndTime?.getTime() || 0) / 1000)
 								}
 								disabled={props.readOnly}
-								minTime={getMinTime(
-									new Date((props.appointment?.startTime || 0) * 1000)
-								)}
+								minTime={defaultEndTime}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
 								onChange={(date) =>
