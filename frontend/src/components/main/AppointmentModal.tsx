@@ -173,10 +173,13 @@ function AppointmentBody(props: AptBodyProps) {
 										? new Date(props.appointment?.startTime * 1000)
 										: new Date()
 								}
-								showTimeInput
-								timeInputLabel='Start Time'
+								showTimeSelect
 								disabled={props.readOnly}
 								minDate={new Date()}
+								minTime={getMinTime(
+									new Date((props.appointment?.startTime || 0) * 1000)
+								)}
+								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
 								onChange={(date) =>
 									setStartTime(props.appointment, props.setAppointment, date)
@@ -201,7 +204,9 @@ function AppointmentBody(props: AptBodyProps) {
 									printDate((defaultEndTime?.getTime() || 0) / 1000)
 								}
 								disabled={props.readOnly}
-								minTime={getMinTime()}
+								minTime={getMinTime(
+									new Date((props.appointment?.startTime || 0) * 1000)
+								)}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
 								onChange={(date) =>
@@ -413,13 +418,22 @@ function setAppointmentDescription(
 	}
 }
 
-function getMinTime(): Date {
+function getMinTime(startTime: Date): Date {
 	let today = new Date();
-	if (today.getHours() < 9) {
-		today.setHours(9);
-		today.setMinutes(0);
+	if (
+		startTime.getDate() === today.getDate() &&
+		startTime.getMonth() === today.getMonth() &&
+		startTime.getFullYear() === today.getFullYear()
+	) {
+		if (today.getHours() < 9) {
+			today.setHours(9);
+			today.setMinutes(0);
+			return today;
+		}
 		return today;
 	}
+	today.setHours(9);
+	today.setMinutes(0);
 	return today;
 }
 
