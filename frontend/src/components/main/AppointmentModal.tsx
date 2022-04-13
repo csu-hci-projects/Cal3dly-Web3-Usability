@@ -45,6 +45,9 @@ export default function AppointmentModal(props: Props) {
 				? 'cancelAppointment(string,address)'
 				: 'cancelAppointment(address,string)'
 		);
+	useEffect(() => {
+		console.log(appointmentStatus);
+	}, [appointmentStatus]);
 	return (
 		<Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
 			<ModalOverlay />
@@ -193,11 +196,17 @@ function AppointmentBody(props: AptBodyProps) {
 								selected={defaultEndTime}
 								showTimeSelect
 								showTimeSelectOnly
-								timeInputLabel='End Time'
+								value={
+									printDate(props.appointment?.endTime) ??
+									printDate((defaultEndTime?.getTime() || 0) / 1000)
+								}
 								disabled={props.readOnly}
 								minTime={getMinTime()}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
+								onChange={(date) =>
+									setEndTime(props.appointment, props.setAppointment, date)
+								}
 								customInput={
 									<Input
 										bg='#edf2f7'
@@ -206,9 +215,6 @@ function AppointmentBody(props: AptBodyProps) {
 										focusBorderColor='#82C6F4'
 										fontFamily='inherit'
 									/>
-								}
-								onChange={(date) =>
-									setEndTime(props.appointment, props.setAppointment, date)
 								}
 							/>
 						</Flex>
@@ -376,16 +382,19 @@ function setEndTime(
 	>,
 	endTime: Date | null
 ) {
-	if (appointment && isValidEndTime(endTime)) {
+	if (appointment && isValidEndTime(endTime, appointment.startTime)) {
 		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
 		t.endTime = (endTime?.getTime() || 0) / 1000;
 		setAppointment(t);
 	}
 }
 
-function isValidEndTime(endTime: Date | null): boolean {
-	if (endTime) {
-		return new Date() < endTime;
+function isValidEndTime(
+	endTime: Date | null,
+	startTime: number | undefined
+): boolean {
+	if (endTime && startTime) {
+		return new Date() < endTime && new Date(startTime * 1000) < endTime;
 	}
 	return false;
 }
@@ -419,4 +428,25 @@ function getMaxTime(): Date {
 	today.setHours(20);
 	today.setMinutes(0);
 	return today;
+}
+
+function printDate(endTime: number | undefined): string | undefined {
+	if (endTime) {
+		const date = new Date(endTime * 1000);
+		let month: string | number = date.getMonth() + 1;
+		if (month < 10) {
+			month = '0' + month;
+		}
+		const day = date.getDate();
+		const year = date.getFullYear();
+		let hours = date.getHours();
+		let minutes: string | number = date.getMinutes();
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+		hours = hours % 12;
+		hours = hours ? hours : 12; // the hour '0' should be '12'
+		minutes = minutes < 10 ? '0' + minutes : minutes;
+		const strTime =
+			month + '/' + day + '/' + year + ' ' + hours + ':' + minutes + ' ' + ampm;
+		return strTime;
+	}
 }
