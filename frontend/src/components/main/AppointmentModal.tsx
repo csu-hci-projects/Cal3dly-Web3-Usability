@@ -25,7 +25,7 @@ import {
 	TransactionStatus,
 	useEthers,
 } from '@usedapp/core';
-import { Address } from '../../types';
+import { Address, AppointmentMethods } from '../../types';
 import {
 	FaCheckCircle,
 	FaInfoCircle,
@@ -37,14 +37,12 @@ interface Props {
 	isOpen: boolean;
 	onClose: () => void;
 	appointment?: Cal3dlyAppointment;
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>;
+	appointmentMethods: AppointmentMethods;
 }
 
 export default function AppointmentModal(props: Props) {
 	const [readOnly, setReadOnly] = useState<boolean>(
-		isValidAppointment(props.appointment)
+		props.appointmentMethods.isValid()
 	);
 	const toast = useToast();
 	const { account } = useEthers();
@@ -58,7 +56,7 @@ export default function AppointmentModal(props: Props) {
 		);
 
 	useEffect(() => {
-		setReadOnly(isValidAppointment(props.appointment));
+		setReadOnly(props.appointmentMethods.isValid());
 	}, [props.isOpen]);
 	useEffect(() => {
 		if (isValidStatus(appointmentStatus.status)) {
@@ -82,8 +80,8 @@ export default function AppointmentModal(props: Props) {
 			>
 				<AppointmentHeader />
 				<AppointmentBody
+					appointmentMethods={props.appointmentMethods}
 					appointment={props.appointment}
-					setAppointment={props.setAppointment}
 					addAppointment={addAppointment}
 					cancelAppointment={cancelAppointment}
 					onClose={props.onClose}
@@ -117,14 +115,12 @@ function AppointmentHeader() {
 
 interface AptBodyProps {
 	appointment?: Cal3dlyAppointment;
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>;
 	addAppointment: (...args: any[]) => Promise<void>;
 	cancelAppointment: (...args: any[]) => Promise<void>;
 	onClose: () => void;
 	readOnly: boolean;
 	account: Address;
+	appointmentMethods: AppointmentMethods;
 }
 
 function AppointmentBody(props: AptBodyProps) {
@@ -134,7 +130,7 @@ function AppointmentBody(props: AptBodyProps) {
 			? new Date(props.appointment.startTime * 1000)
 			: new Date();
 		endTime.setMinutes(endTime.getMinutes() + 30);
-		setEndTime(props.appointment, props.setAppointment, endTime);
+		props.appointmentMethods.setEndTime(endTime);
 		setDefaultEndTime(endTime);
 	}, [props.appointment?.startTime]);
 
@@ -166,11 +162,7 @@ function AppointmentBody(props: AptBodyProps) {
 							bg='#edf2f7'
 							focusBorderColor='#82C6F4'
 							onChange={(input) =>
-								setAppointmentTitle(
-									props.appointment,
-									props.setAppointment,
-									input.target.value
-								)
+								props.appointmentMethods.setAppointmentTitle(input.target.value)
 							}
 						/>
 					</Flex>
@@ -201,9 +193,7 @@ function AppointmentBody(props: AptBodyProps) {
 								)}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
-								onChange={(date) =>
-									setStartTime(props.appointment, props.setAppointment, date)
-								}
+								onChange={(date) => props.appointmentMethods.setStartTime(date)}
 								fixedHeight
 								customInput={
 									<Input
@@ -227,9 +217,7 @@ function AppointmentBody(props: AptBodyProps) {
 								minTime={defaultEndTime}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
-								onChange={(date) =>
-									setEndTime(props.appointment, props.setAppointment, date)
-								}
+								onChange={(date) => props.appointmentMethods.setEndTime(date)}
 								customInput={
 									<Input
 										bg='#edf2f7'
@@ -255,9 +243,7 @@ function AppointmentBody(props: AptBodyProps) {
 						defaultValue={props.appointment?.description}
 						disabled={props.readOnly}
 						onChange={(input) =>
-							setAppointmentDescription(
-								props.appointment,
-								props.setAppointment,
+							props.appointmentMethods.setAppointmentDescription(
 								input.target.value
 							)
 						}
@@ -278,7 +264,7 @@ function AppointmentBody(props: AptBodyProps) {
 }
 
 function SubmitButton(props: AptBodyProps) {
-	const { appointment, readOnly } = props;
+	const { appointment, readOnly, appointmentMethods } = props;
 	return (
 		<Flex justifyContent='flex-end'>
 			{readOnly ? (
@@ -287,7 +273,7 @@ function SubmitButton(props: AptBodyProps) {
 					label={`It's too late to cancel this appointment.`}
 					fontWeight='bold'
 					shouldWrapChildren
-					isDisabled={!isCanacelable(props.appointment?.startTime)}
+					isDisabled={!isCanacelable(appointment?.startTime)}
 				>
 					<Button
 						bg='#F05F57'
@@ -295,7 +281,7 @@ function SubmitButton(props: AptBodyProps) {
 						border='1px solid white'
 						boxShadow='dark-lg'
 						alignContent='center'
-						disabled={isCanacelable(props.appointment?.startTime)}
+						disabled={isCanacelable(appointment?.startTime)}
 						onClick={() => cancelAppointment(props)}
 						_hover={{
 							backgroundColor: '#591945',
@@ -310,7 +296,7 @@ function SubmitButton(props: AptBodyProps) {
 					label={`Your appointment needs a title, start time and end time.`}
 					fontWeight='bold'
 					shouldWrapChildren
-					isDisabled={isValidAppointment(appointment)}
+					isDisabled={appointmentMethods.isValid()}
 				>
 					<Button
 						bg='#591945'
@@ -318,7 +304,7 @@ function SubmitButton(props: AptBodyProps) {
 						border='1px solid white'
 						boxShadow='dark-lg'
 						alignContent='center'
-						disabled={!isValidAppointment(appointment)}
+						disabled={!appointmentMethods.isValid()}
 						onClick={() => scheduleAppointment(props)}
 						_hover={{
 							color: 'black',
@@ -337,16 +323,6 @@ function isCanacelable(startTime: number | undefined): boolean {
 	return (startTime || 0) < new Date().getTime() / 1000;
 }
 
-function isValidAppointment(
-	appointment: Cal3dlyAppointment | undefined
-): boolean {
-	return !!(
-		appointment?.title?.length &&
-		appointment?.startTime &&
-		appointment?.endTime
-	);
-}
-
 function getOtherAttendee(account: Address, attendees: Address[]): string {
 	const otherAttendees = attendees.filter((attendee) => attendee !== account);
 	return otherAttendees.length && otherAttendees[0]
@@ -355,7 +331,7 @@ function getOtherAttendee(account: Address, attendees: Address[]): string {
 }
 
 function scheduleAppointment(props: AptBodyProps) {
-	const { appointment, setAppointment, addAppointment, onClose } = props;
+	const { appointment, appointmentMethods, addAppointment, onClose } = props;
 	addAppointment(
 		appointment?.owner,
 		appointment?.title,
@@ -363,13 +339,18 @@ function scheduleAppointment(props: AptBodyProps) {
 		appointment?.startTime,
 		appointment?.endTime
 	);
-	setAppointment(undefined);
+	appointmentMethods.clearAppointment();
 	onClose();
 }
 
 function cancelAppointment(props: AptBodyProps) {
-	const { account, appointment, cancelAppointment, setAppointment, onClose } =
-		props;
+	const {
+		account,
+		appointment,
+		cancelAppointment,
+		appointmentMethods,
+		onClose,
+	} = props;
 	if (appointment) {
 		if (account === appointment.owner) {
 			cancelAppointment(
@@ -381,76 +362,8 @@ function cancelAppointment(props: AptBodyProps) {
 		} else {
 			cancelAppointment(appointment.owner, appointment.title);
 		}
-		setAppointment(undefined);
+		appointmentMethods.clearAppointment();
 		onClose();
-	}
-}
-
-function setAppointmentTitle(
-	appointment: Cal3dlyAppointment | undefined,
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>,
-	title: string
-) {
-	if (appointment) {
-		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
-		t.title = title;
-		setAppointment(t);
-	}
-}
-
-function setStartTime(
-	appointment: Cal3dlyAppointment | undefined,
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>,
-	startTime: Date | null
-) {
-	if (appointment) {
-		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
-		if (startTime?.getTime()) {
-			t.startTime = startTime.getTime() / 1000;
-			setAppointment(t);
-		}
-	}
-}
-
-function setEndTime(
-	appointment: Cal3dlyAppointment | undefined,
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>,
-	endTime: Date | null
-) {
-	if (appointment && isValidEndTime(endTime, appointment.startTime)) {
-		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
-		t.endTime = (endTime?.getTime() || 0) / 1000;
-		setAppointment(t);
-	}
-}
-
-function isValidEndTime(
-	endTime: Date | null,
-	startTime: number | undefined
-): boolean {
-	if (endTime && startTime) {
-		return new Date() < endTime && new Date(startTime * 1000) < endTime;
-	}
-	return false;
-}
-
-function setAppointmentDescription(
-	appointment: Cal3dlyAppointment | undefined,
-	setAppointment: React.Dispatch<
-		React.SetStateAction<Cal3dlyAppointment | undefined>
-	>,
-	description: string
-) {
-	if (appointment) {
-		let t: Cal3dlyAppointment = JSON.parse(JSON.stringify(appointment));
-		t.description = description;
-		setAppointment(t);
 	}
 }
 

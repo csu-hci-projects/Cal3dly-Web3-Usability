@@ -9,6 +9,7 @@ import { Address } from '../../types';
 import { useDisclosure } from '@chakra-ui/react';
 import AppointmentModal from './AppointmentModal';
 import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';
+import useAppointment from '../../hooks/useAppointment';
 
 interface Props {
 	owner: Address;
@@ -18,9 +19,7 @@ export const Calendar: FC<Props> = ({ owner }) => {
 	const { account } = useEthers();
 	const rawApts = useGetAppointments(owner);
 	const [apts, setApts] = useState<EventInput[]>(formatApts(rawApts, owner));
-	const [selectedDate, setSelectedDate] = useState<
-		Cal3dlyAppointment | undefined
-	>();
+	const { appointment, setAppointment, appointmentMethods } = useAppointment();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	useEffect(() => {
@@ -44,12 +43,12 @@ export const Calendar: FC<Props> = ({ owner }) => {
 						forceEventDuration
 						dateClick={(date) => {
 							date.date >= new Date()
-								? dateClicked(owner, date.date, onOpen, setSelectedDate)
+								? dateClicked(owner, date.date, onOpen, setAppointment)
 								: null;
 						}}
 						eventClick={(date) => {
 							accountHasAccess(account, date.event.extendedProps.attendees)
-								? eventClicked(date.event, onOpen, setSelectedDate)
+								? eventClicked(date.event, onOpen, setAppointment)
 								: null;
 						}}
 						events={[...apts]}
@@ -59,8 +58,8 @@ export const Calendar: FC<Props> = ({ owner }) => {
 			<AppointmentModal
 				isOpen={isOpen}
 				onClose={onClose}
-				appointment={selectedDate}
-				setAppointment={setSelectedDate}
+				appointment={appointment}
+				appointmentMethods={appointmentMethods}
 			/>
 		</>
 	);
@@ -89,11 +88,11 @@ const dateClicked = (
 	owner: Address,
 	date: Date,
 	onOpen: () => void,
-	setSelectedDate: (
+	setAppointment: (
 		value: React.SetStateAction<Cal3dlyAppointment | undefined>
 	) => void
 ) => {
-	setSelectedDate(new Cal3dlyAppointment(owner ?? '', date.getTime() / 1000));
+	setAppointment(new Cal3dlyAppointment(owner ?? '', date.getTime() / 1000));
 	onOpen();
 };
 
@@ -104,11 +103,11 @@ function accountHasAccess(account: Address, attendees: Address[]) {
 function eventClicked(
 	event: any,
 	onOpen: () => void,
-	setSelectedDate: (
+	setAppointment: (
 		value: React.SetStateAction<Cal3dlyAppointment | undefined>
 	) => void
 ) {
-	setSelectedDate(
+	setAppointment(
 		new Cal3dlyAppointment(
 			event.extendedProps.owner,
 			event.start?.getTime() / 1000,
