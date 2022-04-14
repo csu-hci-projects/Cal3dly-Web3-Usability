@@ -7,14 +7,6 @@
   background: linear-gradient(90deg, rgba(240,95,87,1) 0%, rgba(136,48,75,1) 100%);
 }
 
-.header-contents {
-  padding: 12px;
-  margin: 0, auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .main-content-area{
   padding: 8px;
   position: relative;

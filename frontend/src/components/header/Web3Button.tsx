@@ -5,16 +5,25 @@ import {
 	useLookupAddress,
 	useEtherBalance,
 } from '@usedapp/core';
-import { Button, Box, Text } from '@chakra-ui/react';
+import { Button, Box, Text, IconButton, Flex } from '@chakra-ui/react';
+import { FaHouseUser } from 'react-icons/fa';
 import { formatEther } from '@ethersproject/units';
 import Identicon from './Identicon';
+import { Address } from '../../types';
+import { setQueryString } from '../../services/queryString';
 
-export const Web3Button: FC<any> = (props) => {
+interface Props {
+	onOpen: () => void;
+	setOwner: React.Dispatch<React.SetStateAction<Address>>;
+	owner: Address;
+}
+
+export const Web3Button: FC<Props> = ({ onOpen, setOwner, owner }) => {
 	const { activateBrowserWallet, account } = useEthers();
 	const balance = useEtherBalance(account);
 	const ens = useLookupAddress();
 	return (
-		<>
+		<Flex>
 			{account ? (
 				<Box
 					display='flex'
@@ -29,7 +38,7 @@ export const Web3Button: FC<any> = (props) => {
 						</Text>
 					</Box>
 					<Button
-						onClick={props.onOpen}
+						onClick={onOpen}
 						bg='#A23B4D'
 						color='white'
 						border='1px solid transparent'
@@ -66,6 +75,32 @@ export const Web3Button: FC<any> = (props) => {
 					Connect Wallet
 				</Button>
 			)}
-		</>
+			{account && owner !== account && (
+				<IconButton
+					aria-label='Go to your Cal3dly'
+					ml='10px'
+					borderRadius='3xl'
+					display='inline-flex'
+					variant='unstyled'
+					alignItems='center'
+					justifyContent='center'
+					bg='#A23B4D'
+					color='white'
+					_hover={{
+						backgroundColor: '#F05F57',
+					}}
+					icon={<FaHouseUser size={30} />}
+					onClick={() => showHomeCalender(setOwner, account)}
+				/>
+			)}
+		</Flex>
 	);
 };
+
+function showHomeCalender(
+	setOwner: React.Dispatch<React.SetStateAction<Address>>,
+	account: Address
+) {
+	setOwner(account);
+	setQueryString('owner', account ?? '');
+}
