@@ -12,6 +12,7 @@ import {
 	Input,
 	Textarea,
 	useToast,
+	Tooltip,
 } from '@chakra-ui/react';
 import { useCal3dlyContractMethod } from '../../hooks/useCal3dly';
 import DatePicker from 'react-datepicker';
@@ -278,41 +279,59 @@ function SubmitButton(props: AptBodyProps) {
 	return (
 		<Flex justifyContent='flex-end'>
 			{readOnly ? (
-				<Button
-					bg='#F05F57'
-					color='white'
-					border='1px solid white'
-					boxShadow='dark-lg'
-					alignContent='center'
-					disabled={
-						(props.appointment?.startTime || 0) < new Date().getTime() / 1000
-					}
-					onClick={() => cancelAppointment(props)}
-					_hover={{
-						backgroundColor: '#591945',
-					}}
+				<Tooltip
+					hasArrow
+					label={`It's too late to cancel this appointment.`}
+					fontWeight='bold'
+					shouldWrapChildren
+					isDisabled={!isCanacelable(props.appointment?.startTime)}
 				>
-					Cancel Appointment
-				</Button>
+					<Button
+						bg='#F05F57'
+						color='white'
+						border='1px solid white'
+						boxShadow='dark-lg'
+						alignContent='center'
+						disabled={isCanacelable(props.appointment?.startTime)}
+						onClick={() => cancelAppointment(props)}
+						_hover={{
+							backgroundColor: '#591945',
+						}}
+					>
+						Cancel Appointment
+					</Button>
+				</Tooltip>
 			) : (
-				<Button
-					bg='#591945'
-					color='white'
-					border='1px solid white'
-					boxShadow='dark-lg'
-					alignContent='center'
-					disabled={!isValidAppointment(appointment)}
-					onClick={() => scheduleAppointment(props)}
-					_hover={{
-						color: 'black',
-						backgroundColor: '#F05F57',
-					}}
+				<Tooltip
+					hasArrow
+					label={`Your appointment needs a title, start time and end time.`}
+					fontWeight='bold'
+					shouldWrapChildren
+					isDisabled={isValidAppointment(appointment)}
 				>
-					Schedule
-				</Button>
+					<Button
+						bg='#591945'
+						color='white'
+						border='1px solid white'
+						boxShadow='dark-lg'
+						alignContent='center'
+						disabled={!isValidAppointment(appointment)}
+						onClick={() => scheduleAppointment(props)}
+						_hover={{
+							color: 'black',
+							backgroundColor: '#F05F57',
+						}}
+					>
+						Schedule
+					</Button>
+				</Tooltip>
 			)}
 		</Flex>
 	);
+}
+
+function isCanacelable(startTime: number | undefined): boolean {
+	return (startTime || 0) < new Date().getTime() / 1000;
 }
 
 function isValidAppointment(

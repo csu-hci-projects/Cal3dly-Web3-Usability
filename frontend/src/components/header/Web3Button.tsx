@@ -5,7 +5,7 @@ import {
 	useLookupAddress,
 	useEtherBalance,
 } from '@usedapp/core';
-import { Button, Box, Text, IconButton, Flex } from '@chakra-ui/react';
+import { Button, Box, Text, IconButton, Flex, Tooltip } from '@chakra-ui/react';
 import { FaHouseUser } from 'react-icons/fa';
 import { formatEther } from '@ethersproject/units';
 import Identicon from './Identicon';
@@ -76,22 +76,29 @@ export const Web3Button: FC<Props> = ({ onOpen, setOwner, owner }) => {
 				</Button>
 			)}
 			{account && owner !== account && (
-				<IconButton
-					aria-label='Go to your Cal3dly'
-					ml='10px'
-					borderRadius='3xl'
-					display='inline-flex'
-					variant='unstyled'
-					alignItems='center'
-					justifyContent='center'
-					bg='#A23B4D'
-					color='white'
-					_hover={{
-						backgroundColor: '#F05F57',
-					}}
-					icon={<FaHouseUser size={30} />}
-					onClick={() => showHomeCalender(setOwner, account)}
-				/>
+				<Tooltip
+					hasArrow
+					label='Go to your Cal3dly'
+					bg='#8C314B'
+					fontWeight='bold'
+				>
+					<IconButton
+						aria-label='Go to your Cal3dly'
+						ml='10px'
+						borderRadius='3xl'
+						display='inline-flex'
+						variant='unstyled'
+						alignItems='center'
+						justifyContent='center'
+						bg='#A23B4D'
+						color='white'
+						_hover={{
+							backgroundColor: '#F05F57',
+						}}
+						icon={<FaHouseUser size={30} />}
+						onClick={() => showHomeCalender(setOwner, account)}
+					/>
+				</Tooltip>
 			)}
 		</Flex>
 	);
