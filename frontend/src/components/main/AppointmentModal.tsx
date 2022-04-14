@@ -64,10 +64,13 @@ export default function AppointmentModal(props: Props) {
 		if (isValidStatus(appointmentStatus.status)) {
 			evaluateAddToast(appointmentStatus, toast);
 		}
+	}, [appointmentStatus]);
+
+	useEffect(() => {
 		if (isValidStatus(cancelledAppointmentStatus.status)) {
 			evaluateCancelToast(cancelledAppointmentStatus, toast);
 		}
-	}, [appointmentStatus, cancelledAppointmentStatus]);
+	}, [cancelledAppointmentStatus]);
 	return (
 		<Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
 			<ModalOverlay />
