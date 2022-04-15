@@ -43,3 +43,9 @@ overflow-x: scroll;
 ::-webkit-scrollbar-thumb {
   display: none;
 }
+
+.event{
+  background-image: linear-gradient( 135deg, #F05F57 10%, #360940 100%);
+  color: 'white';
+  font-weight: bolder;
+}
