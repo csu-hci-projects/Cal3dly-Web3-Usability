@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
 	useEthers,
 	shortenAddress,
@@ -22,6 +22,12 @@ export const Web3Button: FC<Props> = ({ onOpen, setOwner, owner }) => {
 	const { activateBrowserWallet, account } = useEthers();
 	const balance = useEtherBalance(account);
 	const ens = useLookupAddress();
+	useEffect(() => {
+		if (!owner && account?.length) {
+			setOwner(account);
+			setQueryString('owner', account);
+		}
+	}, [account]);
 	return (
 		<Flex>
 			{account ? (
