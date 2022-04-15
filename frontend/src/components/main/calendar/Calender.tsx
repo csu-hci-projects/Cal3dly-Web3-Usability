@@ -3,13 +3,14 @@ import '@fullcalendar/react/dist/vdom';
 import FullCalendar, { EventInput } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useGetAppointments } from '../../hooks/useCal3dly';
+import { useGetAppointments } from '../../../hooks/useCal3dly';
 import { useEthers } from '@usedapp/core';
-import { Address } from '../../types';
+import { Address } from '../../../types';
 import { useDisclosure } from '@chakra-ui/react';
 import AppointmentModal from './AppointmentModal';
-import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';
-import useAppointment from '../../hooks/useAppointment';
+import { Cal3dlyAppointment } from '../../../models/Cal3dlyAppointment.model';
+import useAppointment from '../../../hooks/useAppointment';
+import { Event } from './Event';
 
 interface Props {
 	owner: Address;
@@ -41,6 +42,13 @@ export const Calendar: FC<Props> = ({ owner }) => {
 						slotMinTime='09:00'
 						slotMaxTime='20:00'
 						forceEventDuration
+						eventClassNames='event'
+						eventContent={(eventObj) => (
+							<Event
+								event={eventObj.event}
+								accountHasAccess={accountHasAccess}
+							/>
+						)}
 						dateClick={(date) => {
 							date.date >= new Date()
 								? dateClicked(owner, date.date, onOpen, setAppointment)
@@ -107,6 +115,7 @@ function eventClicked(
 		value: React.SetStateAction<Cal3dlyAppointment | undefined>
 	) => void
 ) {
+	console.log(event);
 	setAppointment(
 		new Cal3dlyAppointment(
 			event.extendedProps.owner,

@@ -14,9 +14,9 @@ import {
 	useToast,
 	Tooltip,
 } from '@chakra-ui/react';
-import { useCal3dlyContractMethod } from '../../hooks/useCal3dly';
+import { useCal3dlyContractMethod } from '../../../hooks/useCal3dly';
 import DatePicker from 'react-datepicker';
-import { Cal3dlyAppointment } from '../../models/Cal3dlyAppointment.model';
+import { Cal3dlyAppointment } from '../../../models/Cal3dlyAppointment.model';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
 import {
@@ -25,13 +25,13 @@ import {
 	TransactionStatus,
 	useEthers,
 } from '@usedapp/core';
-import { Address, AppointmentMethods } from '../../types';
+import { Address, AppointmentMethods } from '../../../types';
 import {
 	FaCheckCircle,
 	FaInfoCircle,
 	FaExclamationCircle,
 } from 'react-icons/fa';
-import { Toast } from './Toast';
+import { Toast } from '../Toast';
 
 interface Props {
 	isOpen: boolean;
@@ -58,12 +58,12 @@ export default function AppointmentModal(props: Props) {
 	useEffect(() => {
 		setReadOnly(props.appointmentMethods.isValid());
 	}, [props.isOpen]);
+
 	useEffect(() => {
 		if (isValidStatus(appointmentStatus.status)) {
 			evaluateAddToast(appointmentStatus, toast);
 		}
 	}, [appointmentStatus]);
-
 	useEffect(() => {
 		if (isValidStatus(cancelledAppointmentStatus.status)) {
 			evaluateCancelToast(cancelledAppointmentStatus, toast);

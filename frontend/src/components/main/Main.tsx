@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Calendar } from './Calender';
+import { Calendar } from './calendar/Calender';
 import { useEthers } from '@usedapp/core';
 import { Address } from '../../types';
 import { Info } from './Info';
