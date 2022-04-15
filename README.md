@@ -1,5 +1,7 @@
 # 🗓️ Cal3dly: Web3 Usability
 A Web3 Powered Appointment Scheduler.
+## Production Website
+- [Project Production Deployment](https://cal3dly.surge.sh/)
 ## Deployments
 - [Project Dev Deployment](https://cal3dly-dev.surge.sh/)
 - [Latest Cal3dly Smart Contract Deployment](https://goerli.etherscan.io/address/0x376A043Ad8b7991fcB4Dc1a4DcAfB83d81056CB9)
