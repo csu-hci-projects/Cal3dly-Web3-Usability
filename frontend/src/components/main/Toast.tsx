@@ -34,7 +34,7 @@ export const Toast: FC<ToastProps> = ({ title, info, link, icon, mode }) => {
 					<Text fontWeight='extrabold'>{title}</Text>
 					<Text>
 						{info}
-						{mode !== 'error' && (
+						{mode !== 'error' && link.length > 0 && (
 							<>
 								{' '}
 								<Link href={link} isExternal>
