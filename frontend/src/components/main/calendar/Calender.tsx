@@ -50,7 +50,7 @@ export const Calendar: FC<Props> = ({ owner }) => {
 							/>
 						)}
 						dateClick={(date) => {
-							date.date >= new Date()
+							date.date >= new Date() && account
 								? dateClicked(owner, date.date, onOpen, setAppointment)
 								: null;
 						}}
