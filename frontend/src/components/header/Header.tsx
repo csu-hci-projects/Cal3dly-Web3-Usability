@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Heading, useDisclosure, Flex } from '@chakra-ui/react';
 import { Web3Button } from './Web3Button';
 import AccountModal from './AccountModal';
@@ -14,7 +14,11 @@ interface Props {
 export const Header: FC<Props> = ({ owner, setOwner }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { account } = useEthers();
+	const [name, setName] = useState(getName(owner, account));
 	const size = useWindowSize();
+	useEffect(() => {
+		setName(getName(owner, account));
+	}, [account, owner]);
 	return (
 		<div className='header'>
 			<Flex
@@ -26,20 +30,20 @@ export const Header: FC<Props> = ({ owner, setOwner }) => {
 				<Heading letterSpacing='wide' color='#fff' display='block'>
 					🗓️{' '}
 					{size.width > 860
-						? `${getName(owner, account)} Cal3dly`
+						? `${name} Cal3dly`
 						: size.width > 500
 						? 'Cal3dly'
 						: ''}
 				</Heading>
 				<Web3Button onOpen={onOpen} setOwner={setOwner} owner={owner} />
-				<AccountModal isOpen={isOpen} onClose={onClose} />
+				<AccountModal isOpen={isOpen} onClose={onClose} setOwner={setOwner} />
 			</Flex>
 		</div>
 	);
 };
 
 function getName(owner: Address, account: Address) {
-	if (owner === account) {
+	if (owner && owner === account) {
 		return 'Your';
 	} else if (owner && owner !== account) {
 		return `${shortenAddress(owner)}'s`;
