@@ -115,7 +115,6 @@ function eventClicked(
 		value: React.SetStateAction<Cal3dlyAppointment | undefined>
 	) => void
 ) {
-	console.log(event);
 	setAppointment(
 		new Cal3dlyAppointment(
 			event.extendedProps.owner,
