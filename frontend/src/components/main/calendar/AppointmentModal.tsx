@@ -124,14 +124,20 @@ interface AptBodyProps {
 }
 
 function AppointmentBody(props: AptBodyProps) {
-	const [defaultEndTime, setDefaultEndTime] = useState<Date>();
+	const [defaultEndTime, setDefaultEndTime] = useState<any>(
+		props.readOnly
+			? new Date(props.appointment?.endTime || 0 * 1000)
+			: undefined
+	);
 	useEffect(() => {
-		let endTime = props.appointment
-			? new Date(props.appointment.startTime * 1000)
-			: new Date();
-		endTime.setMinutes(endTime.getMinutes() + 30);
-		props.appointmentMethods.setEndTime(endTime);
-		setDefaultEndTime(endTime);
+		if (!props.readOnly) {
+			let endTime = props.appointment
+				? new Date(props.appointment.startTime * 1000)
+				: new Date();
+			endTime.setMinutes(endTime.getMinutes() + 30);
+			props.appointmentMethods.setEndTime(endTime);
+			setDefaultEndTime(endTime);
+		}
 	}, [props.appointment?.startTime]);
 
 	return (
@@ -206,18 +212,25 @@ function AppointmentBody(props: AptBodyProps) {
 								}
 							/>
 							<DatePicker
-								selected={defaultEndTime}
+								selected={
+									props.readOnly &&
+									props.appointment &&
+									props.appointment.endTime
+										? new Date(props.appointment.endTime * 1000)
+										: undefined
+								}
 								showTimeSelect
 								showTimeSelectOnly
-								value={
-									printDate(props.appointment?.endTime) ??
-									printDate((defaultEndTime?.getTime() || 0) / 1000)
-								}
+								value={printDate(props.appointment?.endTime) ?? ''}
 								disabled={props.readOnly}
 								minTime={defaultEndTime}
 								maxTime={getMaxTime()}
 								dateFormat='MM/dd/yyyy h:mm aa'
-								onChange={(date) => props.appointmentMethods.setEndTime(date)}
+								onChange={(date) =>
+									!props.readOnly
+										? props.appointmentMethods.setEndTime(date)
+										: null
+								}
 								customInput={
 									<Input
 										bg='#edf2f7'
