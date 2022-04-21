@@ -76,7 +76,10 @@ export const Web3Button: FC<Props> = ({ onOpen, setOwner, owner }) => {
 						color: 'black',
 						backgroundColor: '#F05F57',
 					}}
-					onClick={() => activateBrowserWallet()}
+					onClick={() => {
+						activateBrowserWallet();
+						account && localStorage.setItem('account', account);
+					}}
 				>
 					Connect Wallet
 				</Button>

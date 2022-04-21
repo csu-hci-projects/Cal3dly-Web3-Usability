@@ -16,9 +16,9 @@ function App() {
 	useEffect(() => {
 		const queryParams = new URLSearchParams(window.location.search);
 		const owner = queryParams.get('owner');
+		const ls = localStorage.getItem('account');
 		setOwner(owner);
-
-		if (owner && !account) {
+		if (owner && !account && !ls) {
 			toast({
 				duration: 7500,
 				render: () => (
@@ -37,9 +37,16 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+		const ls = localStorage.getItem('account');
 		if (!owner && account?.length) {
 			setOwner(account);
 			setQueryString('owner', account);
+		}
+		if (account?.length) {
+			localStorage.setItem('account', account);
+		}
+		if (!account && ls) {
+			localStorage.removeItem('account');
 		}
 	}, [account]);
 

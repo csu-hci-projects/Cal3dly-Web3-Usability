@@ -156,5 +156,6 @@ function deactivateAccount(
 	deactivate();
 	setOwner(undefined);
 	setQueryString('owner', undefined);
+	localStorage.removeItem('account');
 	onClose();
 }
