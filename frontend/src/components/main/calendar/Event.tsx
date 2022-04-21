@@ -18,23 +18,23 @@ export const Event: FC<Props> = ({ event, accountHasAccess }) => {
 					<Flex flex='1'></Flex>
 					<Flex marginBottom='5px' fontSize='sm'>
 						<Text>
-							{new Date(event?.start?.getTime() || 0).toLocaleTimeString(
-								'en-US',
-								{
-									hour: '2-digit',
-									minute: '2-digit',
-									hour12: false,
-								}
-							)}
-							-
+							{
+								new Date(event?.start?.getTime() || 0)
+									.toLocaleTimeString('en-US', {
+										hour: '2-digit',
+										minute: '2-digit',
+									})
+									.replace(/^0/, '')
+									.split(' ')[0]
+							}
 						</Text>
+						<Text>{' - '}</Text>
 						<Text>
 							{new Date(event?.end?.getTime() || 0).toLocaleTimeString(
 								'en-US',
 								{
 									hour: '2-digit',
 									minute: '2-digit',
-									hour12: false,
 								}
 							)}
 						</Text>
