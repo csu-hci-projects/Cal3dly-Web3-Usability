@@ -217,7 +217,7 @@ function AppointmentBody(props: AptBodyProps) {
 									props.appointment &&
 									props.appointment.endTime
 										? new Date(props.appointment.endTime * 1000)
-										: undefined
+										: defaultEndTime
 								}
 								showTimeSelect
 								showTimeSelectOnly

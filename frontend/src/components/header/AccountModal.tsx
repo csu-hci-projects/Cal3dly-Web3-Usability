@@ -2,7 +2,6 @@ import {
 	Box,
 	Button,
 	Flex,
-	Link,
 	Modal,
 	ModalOverlay,
 	ModalContent,
@@ -12,7 +11,7 @@ import {
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon, CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon } from '@chakra-ui/icons';
 import { shortenAddress, useEthers } from '@usedapp/core';
 import Identicon from './Identicon';
 import { Address } from '../../types';

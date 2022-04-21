@@ -20,7 +20,7 @@ function App() {
 		setOwner(owner);
 		if (owner && !account && !ls) {
 			toast({
-				duration: 7500,
+				duration: 5000,
 				render: () => (
 					<Toast
 						title={`${shortenAddress(

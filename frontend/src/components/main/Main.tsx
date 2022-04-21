@@ -3,7 +3,6 @@ import { Calendar } from './calendar/Calender';
 import { useEthers } from '@usedapp/core';
 import { Address } from '../../types';
 import { Info } from './Info';
-import { Flex, Text, Heading } from '@chakra-ui/react';
 
 interface Props {
 	owner: Address;
